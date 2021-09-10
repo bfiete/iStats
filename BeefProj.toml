@@ -1,0 +1,18 @@
+FileVersion = 1
+Dependencies = {corlib = "*", curl = "*", Beefy2D = "*"}
+
+[Project]
+Name = "iStats"
+StartupObject = "iStats.Program"
+
+[Configs.Debug.Win64]
+CLibType = "DynamicDebug"
+LibPaths = ["$(BeefPath)/curl.lib"]
+DebugCommandArguments = "-repeatZ"
+
+[Configs.Debug.Linux64]
+OtherLinkFlags = "$(LinkFlags) -lcurl"
+
+[Configs.Release.Win64]
+CLibType = "Dynamic"
+LibPaths = ["$(BeefPath)/curl.lib"]

@@ -1,0 +1,7 @@
+FileVersion = 1
+Projects = {iStats = {Path = "."}, curl = "*", Beefy2D = "*"}
+Unlocked = ["curl", "Beefy2D", "corlib"]
+ExtraPlatforms = ["Linux64"]
+
+[Workspace]
+StartupProject = "iStats"
