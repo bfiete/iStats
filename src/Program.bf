@@ -156,7 +156,7 @@ namespace iStats
 		int32 mCurDBBucketCount;
 		List<Stream> mDBStreams = new .() ~ DeleteContainerAndItems!(_);
 
-		CacheMode mCacheMode = .AlwaysUseCache;//.RefreshCurrentSeason;//.AlwaysUseCache;
+		CacheMode mCacheMode = .RefreshCurrentSeason;//.RefreshCurrentSeason;//.AlwaysUseCache;
 		String mUserName = new .() ~ delete _;
 		String mPassword = new .() ~ delete _;
 
@@ -576,8 +576,8 @@ namespace iStats
 
 			//for (int32 seasonId in (2000...mHighestSeasonId).Reversed)
 			//for (int32 seasonId in (3000...mHighestSeasonId).Reversed)
-			for (int32 seasonId in (2827...mHighestSeasonId).Reversed)
-			//for (int32 seasonId in (2626...mHighestSeasonId).Reversed) // From Jan 2020
+			//for (int32 seasonId in (2827...mHighestSeasonId).Reversed)
+			for (int32 seasonId in (2626...mHighestSeasonId).Reversed) // From Jan 2020
 			//for (int32 seasonId in (3280...3280).Reversed)
 			{
 				if (breakNow)
@@ -588,7 +588,7 @@ namespace iStats
 
 				StringView seriesName;
 
-				for (int32 week in 0...12)
+				WeekLoop: for (int32 week in 0...12)
 				{
 					RacingWeek racingWeek = null;
 
@@ -679,6 +679,9 @@ namespace iStats
 								seasonNum = 0;
 								seasonYear++;
 							}
+
+							if (seasonYear == 2019)
+								break WeekLoop;
 						}
 
 						RacingSeries series = null;
@@ -1089,9 +1092,11 @@ namespace iStats
 
 						var racingWeek = series.mWeeks[weekIdx];
 						
-						String displayTrackName = scope String("???");
+						String displayTrackName = scope String();
 						if (mTrackNames.TryGetValue(racingWeek.mTrackId, var trackName))
 							displayTrackName.Set(trackName);
+						else
+							displayTrackName.AppendF($"#{racingWeek.mTrackId}");
 
 						String weekInfoFilePath = scope $"{series.SafeName}_{racingWeek.mSeasonYear}_S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}.html";
 						String weekOutStr = scope .();
@@ -1525,9 +1530,11 @@ namespace iStats
 								}
 								else
 								{
-									String displayTrackName = scope String("???");
+									String displayTrackName = scope String();
 									if (mTrackNames.TryGetValue(racingWeek.mTrackId, var trackName))
 										displayTrackName.Set(trackName);
+									else
+										displayTrackName.AppendF($"#{racingWeek.mTrackId}");
 
 									var series = racingWeek.mSeries;
 									String weekInfoFilePath = scope $"{series.SafeName}_{racingWeek.mSeasonYear}_S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}.html";

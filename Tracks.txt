@@ -308,3 +308,5 @@
 97 Sebring International Raceway - Club
 98 Sonoma Raceway - Cup
 99 Barber Motorsports Park - Short A
+413 Hungaroring
+414 Hickory Motor Speedway
