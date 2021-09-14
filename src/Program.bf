@@ -260,6 +260,8 @@ namespace iStats
 					fs.WriteStrSized32(cacheEntry.mData);
 					DeleteAndNullify!(cacheEntry.mData);
 				}
+				fs.Write((int32)0);
+				fs.Write((int32)0);
 				mDBStreams.Add(fs);
 			}
 
@@ -334,6 +336,12 @@ namespace iStats
 				{
 					String key = new .();
 					if (fs.ReadStrSized32(key) case .Err)
+					{
+						delete key;
+						break;
+					}
+
+					if (key.IsEmpty)
 					{
 						delete key;
 						break;
@@ -578,7 +586,7 @@ namespace iStats
 			//for (int32 seasonId in (3000...mHighestSeasonId).Reversed)
 			//for (int32 seasonId in (2827...mHighestSeasonId).Reversed)
 			for (int32 seasonId in (2626...mHighestSeasonId).Reversed) // From Jan 2020
-			//for (int32 seasonId in (3280...3280).Reversed)
+			//for (int32 seasonId in (3280...mHighestSeasonId).Reversed)
 			{
 				if (breakNow)
 					break;
@@ -923,6 +931,7 @@ namespace iStats
 			public Dictionary<StringView, List<CarEntry>> mCarEntries = new .() ~ DeleteDictionaryAndValues!(_);
 		}
 
+		[CRepr]
 		struct UserCountKey : IHashable
 		{
 			public SeriesKind mSeriesKind;
