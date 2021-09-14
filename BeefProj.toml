@@ -13,6 +13,9 @@ DebugCommandArguments = "-repeatZ"
 [Configs.Debug.Linux64]
 OtherLinkFlags = "$(LinkFlags) -lcurl"
 
+[Configs.Release.Linux64]
+OtherLinkFlags = "$(LinkFlags) -lcurl"
+
 [Configs.Release.Win64]
 CLibType = "Dynamic"
 LibPaths = ["$(BeefPath)/curl.lib"]
