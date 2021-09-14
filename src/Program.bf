@@ -1179,7 +1179,7 @@ namespace iStats
 						for (var session in sessions)
 						{
 							var utcTime = session.mSessionDate;
-							var localTime = session.mSessionDate.ToLocalTime();
+							//var localTime = session.mSessionDate.ToLocalTime();
 							seenCarClassSet.Clear();
 
 							session.mSubSessions.Sort(scope (lhs, rhs) => rhs.mHighestIR <=> lhs.mHighestIR);
