@@ -651,7 +651,7 @@ namespace iStats
 
 						bool isCurrentSeason = false;
 
-						var sessionAgeHours = (DateTime.Now - sessionDate).TotalHours;
+						var sessionAgeHours = (DateTime.UtcNow - sessionDate).TotalHours;
 						if (sessionAgeHours < 24*7)
 							isCurrentSeason = true;
 
