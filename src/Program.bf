@@ -156,7 +156,7 @@ namespace iStats
 		int32 mCurDBBucketCount;
 		List<Stream> mDBStreams = new .() ~ DeleteContainerAndItems!(_);
 
-		CacheMode mCacheMode = .RefreshCurrentSeason;//.RefreshCurrentSeason;//.AlwaysUseCache;
+		CacheMode mCacheMode = .AlwaysUseCache;//.RefreshCurrentSeason;//.RefreshCurrentSeason;//.AlwaysUseCache;
 		String mUserName = new .() ~ delete _;
 		String mPassword = new .() ~ delete _;
 
@@ -1573,11 +1573,21 @@ namespace iStats
 						$"""
 						</table>
 						<br>
-						<a href={seriesKind}history.html>Previous Weeks</a>
+						<a href={seriesKind}History.html>Previous Weeks</a>
 						{cHtmlFooter}
 						""");
 
-					WriteCachedText(scope $"html/{seriesHtmlNames[(.)seriesKind]}.html", kindOutStr);
+					String outPath = scope $"html/{seriesHtmlNames[(.)seriesKind]}.html";
+
+					WriteCachedText(outPath, kindOutStr);
+
+					String verifyStr = scope .();
+					File.ReadAllText(outPath, verifyStr).IgnoreError();
+
+					if (!kindOutStr.EndsWith("</body></html>"))
+						Console.WriteLine($"*** ERROR WITH ENDING {outPath} ***");
+					if (kindOutStr != verifyStr)
+						Console.WriteLine($"*** ERROR VERIFYING {outPath} ***");
 				}
 
 				String kindOutStr = scope .();
