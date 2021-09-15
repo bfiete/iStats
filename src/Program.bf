@@ -168,7 +168,7 @@ namespace iStats
 		int mHighestSeasonId = 0;
 		HashSet<int32> mRetrievedCurrentSeasonIdSet = new .() ~ delete _;
 
-		void WriteCache()
+		void WriteCache(bool forceWrite = false)
 		{
 			List<CacheEntry> unbucketedCacheEntries = scope .();
 
@@ -219,7 +219,7 @@ namespace iStats
 			{
 				var cacheBucket = cacheBuckets[cacheEntry.mDBBucketIdx];
 				cacheBucket.mEntries.Add(cacheEntry);
-				if (cacheEntry.mDirty)
+				if ((cacheEntry.mDirty) || (forceWrite))
 					cacheBucket.mDirty = true;
 			}
 
@@ -244,7 +244,8 @@ namespace iStats
 
 				if (streamToClose != null)
 				{
-					mDBStreams.Remove(streamToClose);
+					bool wasRemoved = mDBStreams.Remove(streamToClose);
+					Debug.Assert(wasRemoved);
 					delete streamToClose;
 				}
 
@@ -255,14 +256,20 @@ namespace iStats
 				for (var cacheEntry in cacheBucket.mEntries)
 				{
 					fs.WriteStrSized32(cacheEntry.mKey);
-					cacheEntry.mDBStream = fs;
-					cacheEntry.mDBStreamPos = fs.Position;
+					//cacheEntry.mDBStream = fs;
+					//cacheEntry.mDBStreamPos = fs.Position;
+
+					cacheEntry.mDBStream = null;
+					cacheEntry.mDBStreamPos = -2;
+
 					fs.WriteStrSized32(cacheEntry.mData);
 					DeleteAndNullify!(cacheEntry.mData);
 				}
 				fs.Write((int32)0);
 				fs.Write((int32)0);
-				mDBStreams.Add(fs);
+
+				//mDBStreams.Add(fs);
+				delete fs;
 			}
 
 			Console.WriteLine($"{bucketsDity} db buckets written");
@@ -1751,6 +1758,9 @@ namespace iStats
 
 			pg.ReadConfig();
 			pg.ReadCache();
+
+			//pg.WriteCache(true);
+
 			pg.ReadSeries();
 			pg.ReadTrackNames();
 			pg.RetrieveSeriesDo();
