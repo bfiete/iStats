@@ -8,3 +8,4 @@ git pull
 ../Beef/IDE/dist/BeefBuild -config=Debug
 ../Beef/IDE/dist/BeefBuild -config=Release
 ./build/Debug_Linux64/iStats/iStats
+aws s3 sync html s3://www.simracingstats.com --cache-control 'public, max-age=300'
