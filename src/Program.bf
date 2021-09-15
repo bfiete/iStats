@@ -1786,6 +1786,11 @@ namespace iStats
 			Console.WriteLine($"Total time: {sw.Elapsed}");
 			Console.WriteLine($"{pg.mStatsGetCount} gets, {pg.mStatsTransferCount} not from cache.");
 
+#if !BF_WINDOWS
+			// For some reason closing these causes a problem on Linux...?
+			//pg.mDBStreams.Clear();
+#endif
+
 			return 0;
 		}
 	}
