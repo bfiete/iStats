@@ -1744,14 +1744,17 @@ namespace iStats
 			Stopwatch sw = scope .();
 			sw.Start();
 
+			Program pg = scope .();
+
 			bool doAnalyzeLoop = false;
 			for (var arg in args)
 			{
 				if (arg == "-repeat")
 					doAnalyzeLoop = true;
+				if (arg == "-alwayscache")
+					pg.mCacheMode = .AlwaysUseCache;
 			}
 
-			Program pg = scope .();
 			if (pg.mCacheMode != .AlwaysUseCache)
 				doAnalyzeLoop = false;
 
