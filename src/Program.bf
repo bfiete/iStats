@@ -781,10 +781,10 @@ namespace iStats
 							//33 weightPenalty
 							//34 aggPts
 
-							if (seriesName.Contains("13th Week"))
+							if ((seriesName.Contains("13th Week")) || (week+1 == 13))
 							{
 								// We don't track 13th week races, and these just clutter up our Series.txt
-								Console.Write($" Skipping {seriesName}");
+								Console.Write($" Skipping {seriesName} Week {week + 1}");
 								break RaceLoop;
 							}
 
@@ -937,8 +937,7 @@ namespace iStats
 			public String mOut = new String() ~ delete _;
 			public Dictionary<StringView, List<CarEntry>> mCarEntries = new .() ~ DeleteDictionaryAndValues!(_);
 		}
-
-		[CRepr]
+		
 		struct UserCountKey : IHashable
 		{
 			public SeriesKind mSeriesKind;
@@ -1041,6 +1040,8 @@ namespace iStats
 				"Pure Driving School European Sprint Series",
 				"IMSA Hagerty iRacing Series");*/
 
+			String[] seriesKindNames = scope .("Road", "Oval", "Dirt Road", "Dirt Oval");
+
 			Dictionary<UserCountKey, int> seasonUserCountDict = scope .();
 
 			int highestTotalWeekIdx = 0;
@@ -1051,6 +1052,23 @@ namespace iStats
 			List<String> seriesNames = scope .();
 			seriesNames.AddRange(mSeriesDict.Keys);
 			seriesNames.Sort(scope (lhs, rhs) => lhs.CompareTo(rhs, true));
+
+			void AddKindNav(String outStr)
+			{
+				outStr.AppendF("""
+					<table style=\"border-spacing: 6px 0px;\">
+					<tr><td width=120px style=\"text-align: center;\"> </td>
+					""");
+				String[] seriesHtmlNames = scope .(scope $"index", scope $"oval", scope $"dirtroad", scope $"dirtoval");
+				for (int i < 4)
+				{
+					outStr.AppendF("<td width=240px style=\"text-align: center;\">");
+					outStr.AppendF($"<a href={seriesHtmlNames[i]}.html>{seriesKindNames[i]}</a>");
+					outStr.AppendF("</td>");
+				}
+
+				outStr.AppendF("</tr></table><br>\n");
+			}
 
 			for (var seriesName in seriesNames)
 			{
@@ -1074,7 +1092,8 @@ namespace iStats
 
 				Console.WriteLine($"{series.mName:60} {lastWeek.mSeasonYear} S{lastWeek.mSeasonNum+1}W{lastWeek.mWeekNum+1}");
 				outStr.AppendF($"{cHtmlHeader}<body style=\"font-family: sans-serif\">");
-				outStr.AppendF($"{series.mName:60} {lastWeek.mSeasonYear} S{lastWeek.mSeasonNum+1}W{lastWeek.mWeekNum+1}<br>\n");
+				AddKindNav(outStr);
+				outStr.AppendF($"{series.mName}<br>\n");
 
 				/*for (var racingDay in lastWeek.mRacingDays)
 				{
@@ -1129,8 +1148,10 @@ namespace iStats
 							}}
 							</script>
 							<body style=\"font-family: sans-serif\">
-							{series.mName} {racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1} {displayTrackName}<br><br>\n
 							""");
+
+						AddKindNav(weekOutStr);
+						weekOutStr.AppendF($"<a href=\"{series.SafeName}.html\">{series.mName}</a> {racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1} {displayTrackName}<br><br>\n");
 
 						int32 timeIdx = 0;
 
@@ -1450,7 +1471,6 @@ namespace iStats
 				}*/
 			}
 
-			String[] seriesKindNames = scope .("Road", "Oval", "Dirt Road", "Dirt Oval");
 			for (SeriesKind seriesKind = .Road; seriesKind <= .DirtOval; seriesKind++)
 			{
 				for (int totalWeekIdx in lowestTotalWeekIdx...highestTotalWeekIdx)
@@ -1476,7 +1496,7 @@ namespace iStats
 						$"""
 						<table style=\"border-spacing: 6px 0px;\">
 						<tr>
-						<td>{curYear} S{curSeason+1}W{curWeek+1}</td>
+						<td width=120px style=\"text-align: center;\">{curYear} S{curSeason+1}W{curWeek+1}</td>
 						""");
 
 					for (int i < 4)
@@ -1754,9 +1774,6 @@ namespace iStats
 				if (arg == "-alwayscache")
 					pg.mCacheMode = .AlwaysUseCache;
 			}
-
-			if (pg.mCacheMode != .AlwaysUseCache)
-				doAnalyzeLoop = false;
 
 			Console.WriteLine($"Starting. CacheMode: {pg.mCacheMode}");
 
