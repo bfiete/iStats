@@ -23,7 +23,7 @@
 0 ButtKicker DIRTcar Street Stock Series - Fixed : DirtOval
 0 Carburetor Cup
 3403W1 Classic Lotus Grand Prix : Road
-0 Cooper Tires USF 2000 Championship - Fixed : Road
+0 Cooper Tires USF 2000 Championship - Fixed : USF 2000 Cooper Tires Championship - Fixed
 0 Creventic Endurance Series
 0 Dallara Dash
 3410W1 Dallara Formula iR : Road
@@ -34,11 +34,11 @@
 3418W1 DIRTcar 358 Modified Engine Ice Series : DirtOval
 0 DIRTcar 358 Modified Series
 0 DIRTcar 360 Sprint Car Series
-3419W1 DIRTcar 360 Sprint Car Series : Dirt
+3419W1 DIRTcar 360 Sprint Car Series 
 3421W1 DIRTcar Class C Street Stock Series - Fixed : DirtOval
 3417W1 DIRTcar Limited Late Model Series : DirtOval
 0 DIRTcar Pro Late Model Series
-3424W1 DIRTcar Pro Late Model Series : Dirt
+3424W1 DIRTcar Pro Late Model Series 
 3414W1 DIRTcar Street Stock Buttkicker Series - Fixed : DirtOval
 0 DIRTcar Street Stock Series - Fixed : DIRTcar Street Stock Buttkicker Series - Fixed
 0 DIRTcar UMP Modified Series
@@ -61,8 +61,8 @@
 0 Fanatec Street Stock Series - R : Road
 3360W1 Ferrari GT3 Challenge - Fixed : Road
 3404W1 Formula 3.5 Championship : Road
-0 Formula Renault 2.0 Apex Academy Series : Road
-3368W1 Formula Renault 2.0 Apex Racing Academy Series
+0 Formula Renault 2.0 Apex Academy Series : Formula Renault 2.0 Apex Racing Academy Series
+3368W1 Formula Renault 2.0 Apex Racing Academy Series : Road
 0 Formula Vee iRacing Series : Formula Vee Sim Racing Studio Series
 3354W1 Formula Vee Sim Racing Studio Series : Road
 3372W1 Global Fanatec Challenge : Road
@@ -112,8 +112,7 @@
 3433W1 iRX Volkswagen Beetle Lite : DirtRoad
 0 iRX World Championship Qualifying Series
 0 iRX World Championship Series
-0 Kamel GT Championship : Road
-3374W1 Kamel GT Championship 
+3374W1 Kamel GT Championship  : Road
 0 Late Model Tour : Oval
 3362W1 Late Model Tour  
 3363W1 Late Model Tour - Fixed : Oval
@@ -161,7 +160,7 @@
 0 Pro 4 Off Road Racing Series
 3437W1 Pro 4 Off-Road Racing Series - Fixed : DirtRoad
 0 Pro Mazda Championship : Road
-3357W1 Production Car Sim-Lab Challenge
+3357W1 Production Car Sim-Lab Challenge : Road
 0 Pure Driving School European Sprint Series : European Sprint Pure Driving School Series
 0 Pure Driving School Formula Sprint : Road
 3373W1 Radical Racing Challenge C : Road
@@ -174,7 +173,7 @@
 0 RYCO-Motorsports.com DIRTcar Pro Late Model Series : DirtRoad
 0 RYCO-Motorsports.com SK Modifieds : Road
 3394W1 Silver Crown Cup : Oval
-0 Sim-Lab Production Car Challenge : Road
+0 Sim-Lab Production Car Challenge : Production Car Sim-Lab Challenge
 3365W1 SK Modified Weekly Series : Oval
 3366W1 SK Modified Weekly Series - Fixed : Oval
 3367W1 Skip Barber Race Series : Road
@@ -186,7 +185,7 @@
 0 Stress Test Event
 3426W1 SUPER DIRTcar Big Block Modified Series : DirtOval
 0 Super Late Model Series : Oval
-3378W1 Super Late Model Series : Oval   
+3378W1 Super Late Model Series   
 3379W1 Super Late Model Series - Fixed : Oval
 3388W1 Supercars Series : Road
 3389W1 Supercars Series - Australian Server Only : Road
@@ -198,7 +197,7 @@
 0 Turn Racing Touring Car Challenge : Touring Car Turn Racing Challenge
 3420W1 USAC 360 Sprint Car Series : DirtOval
 0 USAC World Championship Series
-3356W1 USF 2000 Cooper Tires Championship - Fixed : Oval
+3356W1 USF 2000 Cooper Tires Championship - Fixed : Road
 0 VRS European Endurance Series : VRS Global Endurance Series
 0 VRS Global Endurance Series : Road
 0 VRS GT Endurance Series : GT Endurance VRS Series
@@ -208,7 +207,7 @@
 0 WoO Sprint Car Qualifying Series : DirtOval
 0 WoO Sprint Car WC Series : DirtOval
 0 World of Outlaws Late Model Series : DirtOval
-3430W1 World of Outlaws Late Model Series : DirtOval
+3430W1 World of Outlaws Late Model Series 
 3422W1 World of Outlaws Late Model Series - Fixed : DirtOval
 3427W1 World of Outlaws Sprint Car Series : DirtOval
 3428W1 World of Outlaws Sprint Car Series - Fixed : DirtOval
