@@ -244,7 +244,12 @@ namespace iStats
 
 				if (streamToClose != null)
 				{
+					Console.WriteLine($"Closing stream {streamToClose}");
 					bool wasRemoved = mDBStreams.Remove(streamToClose);
+					if (!wasRemoved)
+					{
+						Console.WriteLine($"FAILED TO REMOVE STREAM {streamToClose}");
+					}
 					Debug.Assert(wasRemoved);
 					delete streamToClose;
 				}
@@ -781,6 +786,7 @@ namespace iStats
 							//33 weightPenalty
 							//34 aggPts
 
+							seriesName.Trim();
 							if ((seriesName.Contains("13th Week")) || (week+1 == 13))
 							{
 								// We don't track 13th week races, and these just clutter up our Series.txt
@@ -1053,21 +1059,44 @@ namespace iStats
 			seriesNames.AddRange(mSeriesDict.Keys);
 			seriesNames.Sort(scope (lhs, rhs) => lhs.CompareTo(rhs, true));
 
-			void AddKindNav(String outStr)
+			void AddKindNav(String outStr, int32 totalWeekIdx, SeriesKind seriesKind = .Unknown)
 			{
+				DecodeTotalWeekIdx(totalWeekIdx, var curYear, var curSeason, var curWeek);
 				outStr.AppendF("""
 					<table style=\"border-spacing: 6px 0px;\">
-					<tr><td width=120px style=\"text-align: center;\"> </td>
+					<tr>
 					""");
-				String[] seriesHtmlNames = scope .(scope $"index", scope $"oval", scope $"dirtroad", scope $"dirtoval");
-				for (int i < 4)
+				String[] seriesHtmlNames = scope .(scope $"road", scope $"oval", scope $"dirtroad", scope $"dirtoval");
+				for (var seriesHtmlName in seriesHtmlNames)
 				{
-					outStr.AppendF("<td width=240px style=\"text-align: center;\">");
-					outStr.AppendF($"<a href={seriesHtmlNames[i]}.html>{seriesKindNames[i]}</a>");
+					seriesHtmlName.AppendF($"_{curYear}_S{curSeason+1}W{curWeek+1}");
+					if ((totalWeekIdx == highestTotalWeekIdx) && (@seriesHtmlName == 0))
+						seriesHtmlName.Set("index");
+				}
+
+				for (int i in -1..<4)
+				{
+					outStr.AppendF("<td width=200px style=\"text-align: center;\">");
+					if (i == -1)
+					{
+						DecodeTotalWeekIdx(highestTotalWeekIdx, var highYear, var highSeason, var highWeek);
+						if (totalWeekIdx == highestTotalWeekIdx)
+							outStr.AppendF($"{highYear} S{highSeason+1}W{highWeek+1}");
+						else
+							outStr.AppendF($"<a href=index.html>{highYear} S{highSeason+1}W{highWeek+1}</a>");
+					}
+					else if (i == (.)seriesKind)
+					{
+						outStr.AppendF($"{seriesKindNames[i]}");
+					}
+					else
+					{
+						outStr.AppendF($"<a href={seriesHtmlNames[i]}.html>{seriesKindNames[i]}</a>");
+					}
 					outStr.AppendF("</td>");
 				}
 
-				outStr.AppendF("</tr></table><br>\n");
+				outStr.AppendF("</tr></table><hr><br>\n");
 			}
 
 			for (var seriesName in seriesNames)
@@ -1092,7 +1121,7 @@ namespace iStats
 
 				Console.WriteLine($"{series.mName:60} {lastWeek.mSeasonYear} S{lastWeek.mSeasonNum+1}W{lastWeek.mWeekNum+1}");
 				outStr.AppendF($"{cHtmlHeader}<body style=\"font-family: sans-serif\">");
-				AddKindNav(outStr);
+				AddKindNav(outStr, lastWeek.TotalWeekIdx);
 				outStr.AppendF($"{series.mName}<br>\n");
 
 				/*for (var racingDay in lastWeek.mRacingDays)
@@ -1150,7 +1179,7 @@ namespace iStats
 							<body style=\"font-family: sans-serif\">
 							""");
 
-						AddKindNav(weekOutStr);
+						AddKindNav(weekOutStr, racingWeek.TotalWeekIdx);
 						weekOutStr.AppendF($"<a href=\"{series.SafeName}.html\">{series.mName}</a> {racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1} {displayTrackName}<br><br>\n");
 
 						int32 timeIdx = 0;
@@ -1409,7 +1438,7 @@ namespace iStats
 								}
 							}
 
-							weekOutStr.AppendF("</table><br>\n<table style=\"border-spacing: 6px 0px;\">\n");
+							weekOutStr.AppendF("</table><br><br>\n<table style=\"border-spacing: 6px 0px;\">\n");
 							weekOutStr.AppendF(carClassWeekInfo.mOut);
 							weekOutStr.AppendF("</table>\n");
 						}
@@ -1473,7 +1502,7 @@ namespace iStats
 
 			for (SeriesKind seriesKind = .Road; seriesKind <= .DirtOval; seriesKind++)
 			{
-				for (int totalWeekIdx in lowestTotalWeekIdx...highestTotalWeekIdx)
+				for (int32 totalWeekIdx in lowestTotalWeekIdx...highestTotalWeekIdx)
 				{
 					DecodeTotalWeekIdx(totalWeekIdx, var curYear, var curSeason, var curWeek);
 
@@ -1489,6 +1518,7 @@ namespace iStats
 					kindOutStr.AppendF(
 						$"""
 						{cHtmlHeader}
+						<!-- Generated at {DateTime.UtcNow} UTC -->
 						<body style=\"font-family: sans-serif\">
 						""");
 
@@ -1496,22 +1526,12 @@ namespace iStats
 						$"""
 						<table style=\"border-spacing: 6px 0px;\">
 						<tr>
-						<td width=120px style=\"text-align: center;\">{curYear} S{curSeason+1}W{curWeek+1}</td>
 						""");
 
-					for (int i < 4)
-					{
-						kindOutStr.AppendF("<td width=240px style=\"text-align: center;\">");
-						if (i == (.)seriesKind)
-							kindOutStr.AppendF($"<b>{seriesKindNames[i]}</b>");
-						else
-							kindOutStr.AppendF($"<a href={seriesHtmlNames[i]}.html>{seriesKindNames[i]}</a>");
-						kindOutStr.AppendF("</td>");
-					}
+					AddKindNav(kindOutStr, totalWeekIdx, seriesKind);
 
 					kindOutStr.AppendF(
 						$"""
-						</tr></table><br>
 						<table style=\"border-spacing: 6px 0px;\">
 						<tr><td>Season</td><td>Series</td><td>Track</td><td>Peak Field</td><td>Peak Splits</td></tr>\n
 						""");
@@ -1809,8 +1829,9 @@ namespace iStats
 
 #if !BF_PLATFORM_WINDOWS
 			// For some reason closing these causes a problem on Linux...?
-			pg.mDBStreams.Clear();
+			//pg.mDBStreams.Clear();
 #endif
+			const int i = typeof(String).InstanceSize;
 
 			return 0;
 		}
