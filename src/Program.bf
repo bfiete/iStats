@@ -336,6 +336,7 @@ namespace iStats
 					break;
 				}
 
+				Console.WriteLine($"Adding stream {fs}");
 				mDBStreams.Add(fs);
 
 				int cacheMagic = fs.Read<int32>().Value;
@@ -1829,7 +1830,7 @@ namespace iStats
 
 #if !BF_PLATFORM_WINDOWS
 			// For some reason closing these causes a problem on Linux...?
-			//pg.mDBStreams.Clear();
+			pg.mDBStreams.Clear();
 #endif
 			const int i = typeof(String).InstanceSize;
 
