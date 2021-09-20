@@ -245,7 +245,9 @@ namespace iStats
 				if (streamToClose != null)
 				{
 					Console.WriteLine($"Closing stream {streamToClose}");
+					TestSanity("Pre Remove");
 					bool wasRemoved = mDBStreams.Remove(streamToClose);
+					TestSanity("Post Remove");
 					if (!wasRemoved)
 					{
 						Console.WriteLine($"FAILED TO REMOVE STREAM {streamToClose}");
@@ -300,6 +302,16 @@ namespace iStats
 
 			sd.Get("UserName", mUserName);
 			sd.Get("Password", mPassword);
+		}
+
+		void TestSanity(StringView areaName)
+		{
+			HashSet<Stream> set = scope .();
+			for (var entry in mDBStreams)
+			{
+				if (!set.Add(entry))
+					Runtime.FatalError(scope $"TestSanity failed at {areaName} on {entry}");
+			}
 		}
 
 		void ReadCache()
@@ -404,6 +416,8 @@ namespace iStats
 			}
 
 			Console.WriteLine($". {truncEntries} truncated entries.");
+
+			TestSanity("ReadCache");
 		}
 
 		public Result<void> Get(StringView url, String result, bool allowCache = true)
