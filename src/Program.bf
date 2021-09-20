@@ -249,6 +249,10 @@ namespace iStats
 					if (!wasRemoved)
 					{
 						Console.WriteLine($"FAILED TO REMOVE STREAM {streamToClose}");
+
+						Console.WriteLine($"Count: {mDBStreams.Count}");
+						for (var entry in mDBStreams)
+							Console.WriteLine($"{@entry.Index}: {entry}");
 					}
 					Debug.Assert(wasRemoved);
 					delete streamToClose;
@@ -336,7 +340,7 @@ namespace iStats
 					break;
 				}
 
-				Console.WriteLine($"Adding stream {fs}");
+				Console.WriteLine($"Stream {bucketIdx} {fs}");
 				mDBStreams.Add(fs);
 
 				int cacheMagic = fs.Read<int32>().Value;
