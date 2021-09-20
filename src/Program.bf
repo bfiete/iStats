@@ -244,18 +244,7 @@ namespace iStats
 
 				if (streamToClose != null)
 				{
-					Console.WriteLine($"Closing stream {streamToClose}");
-					TestSanity("Pre Remove");
 					bool wasRemoved = mDBStreams.Remove(streamToClose);
-					TestSanity("Post Remove");
-					if (!wasRemoved)
-					{
-						Console.WriteLine($"FAILED TO REMOVE STREAM {streamToClose}");
-
-						Console.WriteLine($"Count: {mDBStreams.Count}");
-						for (var entry in mDBStreams)
-							Console.WriteLine($"{@entry.Index}: {entry}");
-					}
 					Debug.Assert(wasRemoved);
 					delete streamToClose;
 				}
@@ -352,7 +341,6 @@ namespace iStats
 					break;
 				}
 
-				Console.WriteLine($"Stream {bucketIdx} {fs}");
 				mDBStreams.Add(fs);
 
 				int cacheMagic = fs.Read<int32>().Value;
@@ -1845,12 +1833,6 @@ namespace iStats
 			
 			Console.WriteLine($"Total time: {sw.Elapsed}");
 			Console.WriteLine($"{pg.mStatsGetCount} gets, {pg.mStatsTransferCount} not from cache.");
-
-#if !BF_PLATFORM_WINDOWS
-			// For some reason closing these causes a problem on Linux...?
-			pg.mDBStreams.Clear();
-#endif
-			const int i = typeof(String).InstanceSize;
 
 			return 0;
 		}
