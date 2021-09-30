@@ -1,6 +1,6 @@
 **/db/*
 **/dist/*
-**/html/*
+*.html
 **/build/*
 **/recovery/*
 *.7z

@@ -1183,7 +1183,7 @@ namespace iStats
 					}
 				}*/
 
-				outStr.AppendF("<br><table style=\"border-spacing: 6px 0px;\"><tr><td>Season</td><td>Track</td><td style=\"text-align: center;\">Peak</td><td style=\"text-align: center;\">Max</td></tr>\n");
+				outStr.AppendF("<br><table style=\"border-spacing: 2px 0px;\"><tr><td>Season</td><td>Track</td><td colspan=2 style=\"text-align: center;\">Peak</td><td colspan=2 style=\"text-align: center;\">Max</td></tr>\n");
 
 				HashSet<StringView> seenCarClassSet = scope .();
 
@@ -1474,7 +1474,7 @@ namespace iStats
 									var carEntries = carClassWeekInfo.mCarEntries[carName];
 									String goodAvgLapTime = GetGoodLapTime(carEntries, .. scope .(), (entry) => entry.mAvgLapTime, bestAvgLapTime, true);
 									String goodFasestLapTime = GetGoodLapTime(carEntries, .. scope .(), (entry) => entry.mFastestLapTime, bestFastestLapTime, true);
-									weekOutStr.AppendF("<tr height=0px><td colspan=5><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>\n");
+									weekOutStr.AppendF("<tr height=0px><td colspan=7><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>\n");
 									weekOutStr.AppendF(
 										$"""
 										<tr><td nowrap>{carName}</td><td style=\"text-align: right;\">{carEntries.Count}</td>
@@ -1499,9 +1499,11 @@ namespace iStats
 							outStr.AppendF(
 							$"""
 							<tr height=0px><td colspan=5><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>
-							<tr><td nowrap>{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}</td><td width=600px style=\"position: relative;\">
-							<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; height: calc(100% - 2px); width: {(racingWeek.mFieldPeak / totalFieldMaxAvg) * 100:0.0}%;\">&nbsp;</div>
-							<a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td><td style=\"text-align: right;\">{racingWeek.mFieldPeak}/{racingWeek.mSplitPeak}</td><td style=\"text-align: right;\">{racingWeek.mFieldMax}/{racingWeek.mSplitMax}</td></tr>\n
+							<tr><td nowrap>{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}&nbsp;</td><td width=600px style=\"position: relative;\">
+							<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; height: calc(100% - 2px); width: calc({(int)((racingWeek.mFieldPeak / totalFieldMaxAvg) * 100):0.0}% - 4px);\">&nbsp;</div>
+							<a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td>
+							<td style=\"text-align: right;\">&nbsp;{racingWeek.mFieldPeak}</td><td style=\"text-align: right;\">{racingWeek.mSplitPeak}&nbsp;</td>
+							<td style=\"text-align: right;\">&nbsp;{racingWeek.mFieldMax}</td><td style=\"text-align: right;\">{racingWeek.mSplitMax}&nbsp;</td></tr>
 							""");
 
 							highestTotalWeekIdx = Math.Max(highestTotalWeekIdx, racingWeek.TotalWeekIdx);
@@ -1574,8 +1576,8 @@ namespace iStats
 
 					kindOutStr.AppendF(
 						$"""
-						<table style=\"border-spacing: 6px 0px;\">
-						<tr><td width=78px></td><td>Series</td><td>Track</td><td style=\"text-align: center;\">Peak</td><td style=\"text-align: center;\">Max</td></tr>\n
+						<table style=\"border-spacing: 2px 0px;\">
+						<tr><td width=78px></td><td>Series</td><td>Track</td><td colspan=2 style=\"text-align: center;\">Peak</td><td colspan=2 style=\"text-align: center;\">Max</td></tr>\n
 						""");
 
 					float totalFieldMaxAvg = 0;
@@ -1611,7 +1613,7 @@ namespace iStats
 
 						kindOutStr.AppendF(
 							$"""
-							<tr height=0px><td colspan=5><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>
+							<tr height=0px><td colspan=8><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>
 							<tr><td style=\"padding: 0px; height: 22px;\" >
 							""");
 
@@ -1630,9 +1632,11 @@ namespace iStats
 						$"""
 							</td>
 							<td width=400px style=\"position: relative;\">
-							<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; height: calc(100% - 2px); width: {(racingWeek.mFieldPeak / totalFieldMaxAvg) * 100:0.0}%;\">&nbsp;</div>
+							<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; height: calc(100% - 2px); width: calc({(int)((racingWeek.mFieldPeak / totalFieldMaxAvg) * 100):0.0}% - 4px);\">&nbsp;</div>
 							<a href=\"{series.SafeName}.html\">{series.mName}</a></td>
-							<td><a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td><td style=\"text-align: right;\">{racingWeek.mFieldPeak}/{racingWeek.mSplitPeak}</td><td style=\"text-align: right;\">{racingWeek.mFieldMax}/{racingWeek.mSplitMax}</td></tr>\n
+							<td><a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td>
+							<td style=\"text-align: right;\">&nbsp;{racingWeek.mFieldPeak}</td><td style=\"text-align: right;\">{racingWeek.mSplitPeak}&nbsp;</td>
+							<td style=\"text-align: right;\">&nbsp;{racingWeek.mFieldMax}</td><td style=\"text-align: right;\">{racingWeek.mSplitMax}&nbsp;</td></tr>
 							""");
 					}
 
