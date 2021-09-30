@@ -57,8 +57,10 @@ namespace iStats
 		public int32 mWeekNum; // 0 - based
 		public int32 mTrackId = -1;
 		public List<RacingDay> mRacingDays = new .() ~ DeleteContainerAndItems!(_);
-		public int32 mSplitMaxAvg;
-		public int32 mFieldMaxAvg;
+		public int32 mSplitMax;
+		public int32 mFieldMax;
+		public int32 mSplitPeak;
+		public int32 mFieldPeak;
 		public bool mIsDup;
 
 		public int32 TotalWeekIdx
@@ -70,12 +72,24 @@ namespace iStats
 		}
 	}
 
+	enum RacingLicense
+	{
+		Unknown = -1,
+		R,
+		D,
+		C,
+		B,
+		A
+	}
+
 	class RacingSeries
 	{
 		public SeriesKind mKind = .Unknown;
 		public String mName = new .() ~ delete _;
 		public String mSafeName = new .() ~ delete _;
 		public String mRemapName ~ delete _;
+		public String mID ~ delete _;
+		public RacingLicense mLicense = .Unknown;
 		public int32 mCurrentSeasonId;
 		public int32 mCurrentSeasonWeek = -1;
 		public List<RacingWeek> mWeeks = new .() ~ DeleteContainerAndItems!(_);
@@ -1060,8 +1074,6 @@ namespace iStats
 			int highestTotalWeekIdx = 0;
 			int lowestTotalWeekIdx = int.MaxValue;
 
-			List<RacingWeek> activeRacingWeeks = scope .();
-
 			List<String> seriesNames = scope .();
 			seriesNames.AddRange(mSeriesDict.Keys);
 			seriesNames.Sort(scope (lhs, rhs) => lhs.CompareTo(rhs, true));
@@ -1106,12 +1118,20 @@ namespace iStats
 				outStr.AppendF("</tr></table><hr><br>\n");
 			}
 
+			// Generate per-series htmls 
 			for (var seriesName in seriesNames)
 			{
 				var series = mSeriesDict[seriesName];
 
 				if (series.mKind == .Unknown)
+				{
+					if (series.mCurrentSeasonId != 0)
+					{
+						Console.WriteLine($"WARNING: Uncategorized current series: {series.mName}");
+					}
+
 					continue;
+				}
 
 				if (series.mWeeks.IsEmpty)
 					continue;
@@ -1129,7 +1149,21 @@ namespace iStats
 				Console.WriteLine($"{series.mName:60} {lastWeek.mSeasonYear} S{lastWeek.mSeasonNum+1}W{lastWeek.mWeekNum+1}");
 				outStr.AppendF($"{cHtmlHeader}<body style=\"font-family: sans-serif\">");
 				AddKindNav(outStr, lastWeek.TotalWeekIdx);
-				outStr.AppendF($"{series.mName}<br>\n");
+
+				outStr.AppendF("<table><td style=\"padding: 0px; height: 22px;\">");
+
+				if (series.mLicense != .Unknown)
+				{
+					outStr.AppendF($"<img src=images/License{series.mLicense}.png />");
+				}
+
+				outStr.AppendF($"</td><td style=\"text-align: center;\">{series.mName}</td></table>\n");
+
+				if (series.mID != null)
+				{
+					if (File.Exists(scope $"html/images/{series.mID}.jpg"))
+						outStr.AppendF($"<img src=images/{series.mID}.jpg /><br>");
+				}
 
 				/*for (var racingDay in lastWeek.mRacingDays)
 				{
@@ -1149,7 +1183,7 @@ namespace iStats
 					}
 				}*/
 
-				outStr.AppendF("<br><table style=\"border-spacing: 6px 0px;\"><tr><td>Season</td><td>Track</td><td>Peak Field</td><td>Peak Splits</td></tr>\n");
+				outStr.AppendF("<br><table style=\"border-spacing: 6px 0px;\"><tr><td>Season</td><td>Track</td><td style=\"text-align: center;\">Peak</td><td style=\"text-align: center;\">Max</td></tr>\n");
 
 				HashSet<StringView> seenCarClassSet = scope .();
 
@@ -1324,12 +1358,17 @@ namespace iStats
 							seasonUserCountDict.TryAdd(countKey, var keyPtr, var valuePtr);
 							*valuePtr += totalCarCount;
 						}
-						
+
+						splitMaxes.Sort();
+						fieldMaxes.Sort();
+
 						if (racingWeek.mRacingDays.Count > 0)
 						{
-							racingWeek.mSplitMaxAvg = splitMaxes[splitMaxes.Count / 2];
-							racingWeek.mFieldMaxAvg = fieldMaxes[fieldMaxes.Count / 2];
-							totalFieldMaxAvg = Math.Max(totalFieldMaxAvg, racingWeek.mFieldMaxAvg);
+							racingWeek.mSplitMax = splitMaxes.Back;
+							racingWeek.mFieldMax = fieldMaxes.Back;
+							racingWeek.mSplitPeak = splitMaxes[splitMaxes.Count / 2];
+							racingWeek.mFieldPeak = fieldMaxes[fieldMaxes.Count / 2];
+							totalFieldMaxAvg = Math.Max(totalFieldMaxAvg, racingWeek.mFieldPeak);
 						}
 
 						/*if (displayTrackName.Length > 40)
@@ -1454,24 +1493,19 @@ namespace iStats
 						WriteCachedText(scope $"html/{weekInfoFilePath}", weekOutStr);
 
 						if (pass == 0)
-							carCSV.AppendF($"{weekIdx},{racingWeek.mFieldMaxAvg:0.0},{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}\\n{displayTrackName}\n");
+							carCSV.AppendF($"{weekIdx},{racingWeek.mFieldPeak:0.0},{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}\\n{displayTrackName}\n");
 						else
 						{
 							outStr.AppendF(
 							$"""
 							<tr height=0px><td colspan=5><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>
 							<tr><td nowrap>{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}</td><td width=600px style=\"position: relative;\">
-							<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; width: {(racingWeek.mFieldMaxAvg / totalFieldMaxAvg) * 100:0.0}%;\">&nbsp;</div>
-							<a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td><td style=\"text-align: right;\">{racingWeek.mFieldMaxAvg}</td><td style=\"text-align: right;\">{racingWeek.mSplitMaxAvg}</td></tr>\n
+							<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; height: calc(100% - 2px); width: {(racingWeek.mFieldPeak / totalFieldMaxAvg) * 100:0.0}%;\">&nbsp;</div>
+							<a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td><td style=\"text-align: right;\">{racingWeek.mFieldPeak}/{racingWeek.mSplitPeak}</td><td style=\"text-align: right;\">{racingWeek.mFieldMax}/{racingWeek.mSplitMax}</td></tr>\n
 							""");
 
 							highestTotalWeekIdx = Math.Max(highestTotalWeekIdx, racingWeek.TotalWeekIdx);
 							lowestTotalWeekIdx = Math.Min(lowestTotalWeekIdx, racingWeek.TotalWeekIdx);
-
-							if ((series.mCurrentSeasonId == racingWeek.mSeasonId) && (weekIdx == series.mWeeks.Count - 1))
-							{
-								activeRacingWeeks.Add(racingWeek);
-							}
 						}
 					}
 				}
@@ -1507,6 +1541,7 @@ namespace iStats
 				}*/
 			}
 
+			// Generate per-kind per-week html
 			for (SeriesKind seriesKind = .Road; seriesKind <= .DirtOval; seriesKind++)
 			{
 				for (int32 totalWeekIdx in lowestTotalWeekIdx...highestTotalWeekIdx)
@@ -1540,80 +1575,65 @@ namespace iStats
 					kindOutStr.AppendF(
 						$"""
 						<table style=\"border-spacing: 6px 0px;\">
-						<tr><td>Season</td><td>Series</td><td>Track</td><td>Peak Field</td><td>Peak Splits</td></tr>\n
+						<tr><td width=78px></td><td>Series</td><td>Track</td><td style=\"text-align: center;\">Peak</td><td style=\"text-align: center;\">Max</td></tr>\n
 						""");
 
 					float totalFieldMaxAvg = 0;
 
-					for (int pass < 2)
+					List<RacingWeek> seriesWeekList = scope .();
+					for (var series in mSeriesDict.Values)
 					{
-						/*for (var racingWeek in activeRacingWeeks)
+						if (series.mKind != seriesKind)
+							continue;
+
+						for (var racingWeek in series.mWeeks)
 						{
-							if (racingWeek.mSeries.mKind == seriesKind)
-							{
-								if (pass == 0)
-								{
-									totalFieldMaxAvg = Math.Max(totalFieldMaxAvg, racingWeek.mFieldMaxAvg);
-								}
-								else
-								{
-									String displayTrackName = scope String("???");
-									if (mTrackNames.TryGetValue(racingWeek.mTrackId, var trackName))
-										displayTrackName.Set(trackName);
-
-									var series = racingWeek.mSeries;
-									String weekInfoFilePath = scope $"{series.mName}_{racingWeek.mSeasonYear}_S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}.html";
-
-									kindOutStr.AppendF(
-										$"""
-										<tr height=0px><td colspan=5><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>
-										<tr><td>{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}</td>
-										<td width=400px style=\"position: relative;\">
-										<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; width: {(racingWeek.mFieldMaxAvg / totalFieldMaxAvg) * 100:0.0}%;\">&nbsp;</div>
-										<a href=\"{series.mName}.html\">{series.mName}</a></td>
-										<td><a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td><td style=\"text-align: right;\">{racingWeek.mFieldMaxAvg}</td><td style=\"text-align: right;\">{racingWeek.mSplitMaxAvg}</td></tr>\n
-										""");
-								}
-							}
-						}*/
-
-						for (var series in mSeriesDict.Values)
-						{
-							if (series.mKind != seriesKind)
+							if (racingWeek.TotalWeekIdx != totalWeekIdx)
 								continue;
 
-							for (var racingWeek in series.mWeeks)
-							{
-								if (racingWeek.TotalWeekIdx != totalWeekIdx)
-									continue;
-								
-								if (pass == 0)
-								{
-									totalFieldMaxAvg = Math.Max(totalFieldMaxAvg, racingWeek.mFieldMaxAvg);
-								}
-								else
-								{
-									String displayTrackName = scope String();
-									if (mTrackNames.TryGetValue(racingWeek.mTrackId, var trackName))
-										displayTrackName.Set(trackName);
-									else
-										displayTrackName.AppendF($"#{racingWeek.mTrackId}");
-
-									var series = racingWeek.mSeries;
-									String weekInfoFilePath = scope $"{series.SafeName}_{racingWeek.mSeasonYear}_S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}.html";
-
-									kindOutStr.AppendF(
-										$"""
-										<tr height=0px><td colspan=5><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>
-										<tr><td>{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}</td>
-										<td width=400px style=\"position: relative;\">
-										<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; width: {(racingWeek.mFieldMaxAvg / totalFieldMaxAvg) * 100:0.0}%;\">&nbsp;</div>
-										<a href=\"{series.SafeName}.html\">{series.mName}</a></td>
-										<td><a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td><td style=\"text-align: right;\">{racingWeek.mFieldMaxAvg}</td><td style=\"text-align: right;\">{racingWeek.mSplitMaxAvg}</td></tr>\n
-										""");
-								}
-							}
+							seriesWeekList.Add(racingWeek);
+							totalFieldMaxAvg = Math.Max(totalFieldMaxAvg, racingWeek.mFieldPeak);
 						}
+					}
+
+					seriesWeekList.Sort(scope (lhs, rhs) => rhs.mFieldPeak <=> lhs.mFieldPeak);
+
+					for (var racingWeek in seriesWeekList)
+					{
+						String displayTrackName = scope String();
+						if (mTrackNames.TryGetValue(racingWeek.mTrackId, var trackName))
+							displayTrackName.Set(trackName);
+						else
+							displayTrackName.AppendF($"#{racingWeek.mTrackId}");
+
+						var series = racingWeek.mSeries;
+						String weekInfoFilePath = scope $"{series.SafeName}_{racingWeek.mSeasonYear}_S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}.html";
+
+						kindOutStr.AppendF(
+							$"""
+							<tr height=0px><td colspan=5><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>
+							<tr><td style=\"padding: 0px; height: 22px;\" >
+							""");
+
+						if (series.mLicense != .Unknown)
+						{
+							kindOutStr.AppendF($"<img src=images/License{series.mLicense}.png />");
+						}
+
+						if (series.mID != null)
+						{
+							if (File.Exists(scope $"html/images/icon/{series.mID}.jpg"))
+								kindOutStr.AppendF($"<img src=images/icon/{series.mID}.jpg />");
+						}
+
+						kindOutStr.AppendF(
+						$"""
+							</td>
+							<td width=400px style=\"position: relative;\">
+							<div style=\"position: absolute; left:0; top:0; z-index: -1; border: 1px solid #e0e0e0; background-color: #eeeeee; height: calc(100% - 2px); width: {(racingWeek.mFieldPeak / totalFieldMaxAvg) * 100:0.0}%;\">&nbsp;</div>
+							<a href=\"{series.SafeName}.html\">{series.mName}</a></td>
+							<td><a href=\"{weekInfoFilePath}\">{displayTrackName}</a></td><td style=\"text-align: right;\">{racingWeek.mFieldPeak}/{racingWeek.mSplitPeak}</td><td style=\"text-align: right;\">{racingWeek.mFieldMax}/{racingWeek.mSplitMax}</td></tr>\n
+							""");
 					}
 
 					kindOutStr.AppendF(
@@ -1685,6 +1705,8 @@ namespace iStats
 
 		void ReadSeries()
 		{
+			RacingSeries racingSeries = null;
+
 			var seriesText = File.ReadAllText("Series.txt", .. scope .());
 			for (var line in seriesText.Split('\n'))
 			{
@@ -1693,6 +1715,21 @@ namespace iStats
 				StringView seriesName = default;
 				StringView seriesRemap = default;
 				SeriesKind seriesKind = .Unknown;
+
+				if (line.StartsWith('\t'))
+				{
+					line.RemoveFromStart(1);
+					var itr = line.Split(' ');
+					switch (itr.GetNext().Value)
+					{
+					case "LICENSE":
+						racingSeries.mLicense = Enum.Parse<RacingLicense>(itr.GetNext().Value).Value;
+					case "ID":
+						racingSeries.mID = new String(itr.GetNext().Value);
+					}
+
+					continue;
+				}
 
 				int spacePos = line.IndexOf(' ');
 				if (spacePos > 0)
@@ -1745,16 +1782,19 @@ namespace iStats
 
 				if (seriesId != -1)
 					mCurrentSeriesIdWeek[seriesId] = seriesWeek - 1;
-				if (!mSeriesDict.ContainsKeyAlt(seriesName))
+				if (mSeriesDict.TryAddAlt(seriesName, var keyPtr, var valuePtr))
 				{
-					RacingSeries racingSeries = new .();
+					racingSeries = new .();
 					racingSeries.mKind = seriesKind;
 					racingSeries.mName.Set(seriesName);
 					if (!seriesRemap.IsEmpty)
 						racingSeries.mRemapName = new String(seriesRemap);
 					// We purposely don't set mCurrentSeasonId - this must be recalculated
-					mSeriesDict[racingSeries.mName] = racingSeries;
+					*keyPtr = racingSeries.mName;
+					*valuePtr = racingSeries;
 				}
+				else
+					racingSeries = *valuePtr;
 			}
 		}
 
@@ -1781,6 +1821,11 @@ namespace iStats
 				else if (racingSeries.mKind != .Unknown)
 					data.AppendF($" : {racingSeries.mKind}");
 				data.AppendF("\n");
+
+				if (racingSeries.mLicense != .Unknown)
+					data.AppendF($"\tLICENSE {racingSeries.mLicense}\n");
+				if (racingSeries.mID != null)
+					data.AppendF($"\tID {racingSeries.mID}\n");
 			}
 			 
 			File.WriteAllText("Series.txt", data);
