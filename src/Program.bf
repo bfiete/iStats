@@ -422,6 +422,52 @@ namespace iStats
 			TestSanity("ReadCache");
 		}
 
+		void MakeUTF8(String str)
+		{
+			bool isAsciiEX = false;
+			for (char8 c in str.RawChars)
+			{
+				if (c >= '\x80')
+				{
+					if ((str[Math.Max(0, @c.Index - 1)] < '\x80') &&
+						(str[Math.Min(@c.Index + 1, str.Length - 1)] < '\x80'))
+						isAsciiEX = true;
+				}
+			}
+
+			if (!isAsciiEX)
+				return;
+
+			String newStr = scope .();
+
+			int newSubsessionPrevIdx = 0;
+
+			// Sanitize - not UTF8
+			for (var c in ref str.RawChars)
+			{
+				if (c >= '\x80')
+				{
+					int appendLen = @c.Index - newSubsessionPrevIdx;
+					if (appendLen > 0)
+					{
+						newStr.Append(str.Substring(newSubsessionPrevIdx, appendLen));
+						newSubsessionPrevIdx = @c.Index + 1;
+					}
+					newStr.Append((char32)c);
+				}
+			}
+
+			if (newStr.Length > 0)
+			{
+				int appendLen = str.Length - newSubsessionPrevIdx;
+				if (appendLen > 0)
+					newStr.Append(str.Substring(newSubsessionPrevIdx, appendLen));
+				//str = newStr;
+
+				str.Set(newStr);
+			}
+		}
+
 		public Result<void> Get(StringView url, String result, bool allowCache = true)
 		{
 			mStatsGetCount++;
@@ -433,11 +479,13 @@ namespace iStats
 					if (cacheEntry.mData != null)
 					{
 						result.Append(cacheEntry.mData);
+						MakeUTF8(result);
 					}
 					else
 					{
 						cacheEntry.mDBStream.Position = cacheEntry.mDBStreamPos;
 						cacheEntry.mDBStream.ReadStrSized32(result);
+						MakeUTF8(result);
 					}
 					
 					return .Ok;
@@ -491,6 +539,7 @@ namespace iStats
 			String cacheFilePath = scope $"cache/{cleanString}.txt";
 			if ((allowCache) && (File.ReadAllText(cacheFilePath, result) case .Ok))
 			{
+				MakeUTF8(result);
 				SetCache();
 				return .Ok;
 			}
@@ -511,6 +560,8 @@ namespace iStats
 				StringView sv = .((.)val.Ptr, val.Length);
 				result.Append(sv);
 				//File.WriteAllText(cacheFilePath, sv);
+				//String contentType = trans.GetContentType(.. scope .());
+				MakeUTF8(result);
 				SetCache();
 				return .Ok;
 			default:
@@ -731,34 +782,6 @@ namespace iStats
 
 						String subsessionData = scope .();
 						Get(scope $"https://members.iracing.com/membersite/member/GetEventResultsAsCSV?subsessionid={subSessionId}", subsessionData);
-						int a = 123;
-
-						String newSubsessionData = scope .();
-
-						int newSubsessionPrevIdx = 0;
-
-						// Sanitize - not UTF8
-						for (var c in ref subsessionData.RawChars)
-						{
-							if (c >= '\x80')
-							{
-								int appendLen = @c.Index - newSubsessionPrevIdx;
-								if (appendLen > 0)
-								{
-									newSubsessionData.Append(subsessionData.Substring(newSubsessionPrevIdx, appendLen));
-									newSubsessionPrevIdx = @c.Index + 1;
-								}
-								newSubsessionData.Append((char32)c);
-							}
-						}
-
-						if (newSubsessionData.Length > 0)
-						{
-							int appendLen = subsessionData.Length - newSubsessionPrevIdx;
-							if (appendLen > 0)
-								newSubsessionData.Append(subsessionData.Substring(newSubsessionPrevIdx, appendLen));
-							subsessionData = newSubsessionData;
-						}
 
 						for (var line in subsessionData.Split('\n'))
 						{
