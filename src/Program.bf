@@ -179,6 +179,7 @@ namespace iStats
 
 		int mStatsGetCount = 0;
 		int mStatsTransferCount = 0;
+		int mLowestSeasonId = 2626; // From Jan 2020
 		int mHighestSeasonId = 0;
 		HashSet<int32> mRetrievedCurrentSeasonIdSet = new .() ~ delete _;
 
@@ -656,21 +657,12 @@ namespace iStats
 
 		void Retrieve()
 		{
-			//for (int seasonId in (1300...3400).Reversed)
-			//int32 seasonId = 3278; // IMSA
-			//int32 seasonId = 3280; // VRS Sprint
-
 			int highSeriesId = 0;
 			for (var seriesId in mCurrentSeriesIdWeek.Keys)
 				highSeriesId = Math.Max(highSeriesId, seriesId);
 
 			bool breakNow = false;
-
-			//for (int32 seasonId in (2000...mHighestSeasonId).Reversed)
-			//for (int32 seasonId in (3000...mHighestSeasonId).Reversed)
-			//for (int32 seasonId in (2827...mHighestSeasonId).Reversed)
-			for (int32 seasonId in (2626...mHighestSeasonId).Reversed) // From Jan 2020
-			//for (int32 seasonId in (3280...mHighestSeasonId).Reversed)
+			for (int32 seasonId in (mLowestSeasonId...mHighestSeasonId).Reversed) // From Jan 2020
 			{
 				if (breakNow)
 					break;
@@ -1450,7 +1442,7 @@ namespace iStats
 							String cmpString = scope .();
 							cmpString.AppendF($"+{goodLapTime - bestTime:0.000}");
 							outStr.AppendF($"{minutes}:{seconds:00.000}");
-							if (extraInfo)
+							if ((extraInfo) && (goodLapTime >= bestTime))
 								outStr.AppendF($" {cmpString} {goodIR/1000.0:0.0}k");
 						}
 
@@ -1475,9 +1467,11 @@ namespace iStats
 							for (var carEntries in carClassWeekInfo.mCarEntries.Values)
 							{
 								GetGoodLapTime(carEntries, (entry) => entry.mAvgLapTime, var goodLapTime, var goodIR);
-								bestAvgLapTime = Math.Min(goodLapTime, bestAvgLapTime);
+								if (goodLapTime > 0)
+									bestAvgLapTime = Math.Min(goodLapTime, bestAvgLapTime);
 								GetGoodLapTime(carEntries, (entry) => entry.mFastestLapTime, out goodLapTime, out goodIR);
-								bestFastestLapTime = Math.Min(goodLapTime, bestFastestLapTime);
+								if (goodLapTime > 0)
+									bestFastestLapTime = Math.Min(goodLapTime, bestFastestLapTime);
 							}
 
 							String totalGoodAvgLapTime = GetGoodLapTime(totalCarEntries, .. scope .(), (entry) => entry.mAvgLapTime, bestAvgLapTime, false);
@@ -1872,6 +1866,8 @@ namespace iStats
 					doAnalyzeLoop = true;
 				if (arg == "-alwayscache")
 					pg.mCacheMode = .AlwaysUseCache;
+				if (arg == "-fast")
+					pg.mLowestSeasonId = 3280; //2827
 			}
 
 			Console.WriteLine($"Starting. CacheMode: {pg.mCacheMode}");
