@@ -1062,6 +1062,15 @@ namespace iStats
 				text-decoration: none;
 			}
 
+			.slidecontainer {
+			}
+
+			.slider {
+				width: 440px;
+				-ms-transform: translateY(3px);
+				transform: translateY(3px);
+			}
+
 			</style>
 			""";
 		String cHtmlFooter =
@@ -1081,6 +1090,8 @@ namespace iStats
 				"LMP2 Prototype Challenge - Fixed",
 				"Pure Driving School European Sprint Series",
 				"IMSA Hagerty iRacing Series");*/
+
+			int csvIdx = 0;
 
 			String[] seriesKindNames = scope .("Road", "Oval", "Dirt Road", "Dirt Oval");
 
@@ -1218,6 +1229,8 @@ namespace iStats
 						else
 							displayTrackName.AppendF($"#{racingWeek.mTrackId}");
 
+						int curIRDivIdx = 1;
+
 						String weekInfoFilePath = scope $"{series.SafeName}_{racingWeek.mSeasonYear}_S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}.html";
 						String weekOutStr = scope .();
 						weekOutStr.AppendF(
@@ -1231,12 +1244,139 @@ namespace iStats
 								let timeText = date.toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}});
 								document.write(dateText + " " + timeText);
 							}}
+
+							function SetCookie(cname, cvalue)
+							{{
+								const d = new Date();
+								var exdays = 90
+								d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+								let expires = "expires="+d.toUTCString();
+								var cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+								document.cookie = cookie;
+							}}
+
+							function GetCookie(cname)
+							{{
+								let name = cname + "=";
+								let ca = document.cookie.split(';');
+								for(let i = 0; i < ca.length; i++)
+								{{
+									let c = ca[i];
+									while (c.charAt(0) == ' ')
+										c = c.substring(1);
+									if (c.indexOf(name) == 0)
+										return c.substring(name.length, c.length);
+								}}
+								return "";
+							}}
+
+							gIR = parseInt(GetCookie("ir")) + 0;
+							if (gIR == 0)
+								gIR = 2000;
+							gAvgTimes = [];
+							gFastTimes = [];
+							gCarClasses = [];
+							gCarClasses["ALL"] = "ALL";
 							</script>
 							<body style=\"font-family: sans-serif\">
 							""");
 
 						AddKindNav(weekOutStr, racingWeek.TotalWeekIdx);
 						weekOutStr.AppendF($"<a href=\"{series.SafeName}.html\">{series.mName}</a> {racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1} {displayTrackName}<br><br>\n");
+
+						weekOutStr.AppendF(
+							$"""
+							<div class="slidecontainer" id="irSlider">
+							  Laptime iRating <input type="range" min="5" max="60" value="20" class="slider" id="irSelect"> <div id="ir0" style="display:inline"></div>
+							</div><br>
+
+							<script>
+
+							function FixIR(elem, ir)
+							{{
+								var text = elem.innerHTML;
+								var dotIdx = text.indexOf('.');
+								var spaceIdx = text.lastIndexOf(' ', dotIdx);
+								var kIdx = text.indexOf('k', dotIdx);
+								elem.innerHTML = text.substring(0, spaceIdx + 1) + (ir / 1000.0).toFixed(1) + "k" + text.substring(kIdx + 1);
+							}}
+
+							function TimeToStr(totalSeconds)
+							{{
+								var min = Math.trunc(totalSeconds / 60);
+								var secStr = (totalSeconds - min * 60).toFixed(3);
+								var str = "";
+								if (min > 0)
+								{{
+									str += min;
+									str += ":";
+									if (secStr.indexOf('.') == 1)
+										str += "0";
+								}}
+								str += secStr;
+								return str;
+							}}
+
+							function GetExpectedTime(expectedTimes, ir)
+							{{
+								var cExpectInterval = 200;
+								var leftTime = expectedTimes[Math.trunc(ir / cExpectInterval)];
+								var rightTime = expectedTimes[Math.min(Math.trunc(ir / cExpectInterval) + 1, expectedTimes.length - 1)];
+								var pct = (ir % cExpectInterval) / cExpectInterval;
+								return (leftTime + (rightTime - leftTime)*pct) / 1000.0;
+							}}
+
+							function IRChanged()
+							{{
+								var irSlider = document.getElementById("irSelect");
+								gIR = irSlider.value * 100;
+								SetCookie("ir", gIR);
+								for (var i = 0; true; i++)
+								{{
+									var elem = document.getElementById("ir" + i);
+									if (elem == null)
+										break;
+									FixIR(elem, gIR);
+								}}
+
+								var bestAvgTime = [];
+								var bestFastTime = [];
+
+								for (var carName in gAvgTimes)
+								{{
+									var carClass = gCarClasses[carName];
+									var avgTime = GetExpectedTime(gAvgTimes[carName], gIR);
+									if ((bestAvgTime[carClass] == undefined) || (avgTime < bestAvgTime[carClass]))
+										bestAvgTime[carClass] = avgTime;
+									var fastTime = GetExpectedTime(gFastTimes[carName], gIR);
+									if ((bestFastTime[carClass] == undefined) || (fastTime < bestFastTime[carClass]))
+										bestFastTime[carClass] = fastTime;
+								}}
+
+								for (var carName in gAvgTimes)
+								{{
+									var carClass = gCarClasses[carName];
+									var avgTime = GetExpectedTime(gAvgTimes[carName], gIR);
+									var element = document.getElementById("AVGLAP:" + carName);
+									var html = TimeToStr(avgTime);
+									if (carName != "ALL")
+										html += " (+" + TimeToStr(avgTime - bestAvgTime[carClass]) + ")";
+									element.innerHTML = html;
+
+									var fastTime = GetExpectedTime(gFastTimes[carName], gIR);
+									var element = document.getElementById("FASTLAP:" + carName);
+									html = TimeToStr(GetExpectedTime(gFastTimes[carName], gIR));
+									if (carName != "ALL")
+										html += " (+" + TimeToStr(fastTime - bestFastTime[carClass]) + ")";
+									element.innerHTML = html;
+								}}
+							}}
+
+							document.getElementById("irSelect").value = (gIR / 100).toFixed();
+							document.getElementById("irSelect").oninput = IRChanged;
+							</script>
+
+							""");
 
 						int32 timeIdx = 0;
 
@@ -1453,6 +1593,71 @@ namespace iStats
 							if (@carClassName.Index != 0)
 								weekOutStr.AppendF("<br>\n");
 							var carClassWeekInfo = carClassWeekInfos[carClassName];
+
+							for (var carEntries in carClassWeekInfo.mCarEntries)
+							{
+								String str = scope .();
+								for (var carEntry in carEntries.value)
+								{
+									if ((carEntry.mIR != 0) && (carEntry.mFastestLapTime != 0))
+										str.AppendF($"{carEntry.mIR}, {carEntry.mFastestLapTime}\n");
+								}
+								var filePath = scope $"c:\\temp\\csv\\test{csvIdx++}.txt";
+								File.WriteAllText(filePath, str);
+								weekOutStr.AppendF($"<!-- {carEntries.key} {filePath} -->\n");
+							}
+
+							// Expected times
+							{
+								void TimesOut(StringView varName, StringView name, ExpectedTimes expectedTimes)
+								{
+									weekOutStr.AppendF($"{varName}[\"{name}\"] = [");
+									for (var time in expectedTimes.mExpectedTimes)
+									{
+										if (@time.Index != 0)
+											weekOutStr.Append(", ");
+										weekOutStr.AppendF($"{(int)(time * 1000)}");
+									}
+									weekOutStr.AppendF("];\n");
+								}
+
+								ExpectedTimes totalAvgExpectedTimes = scope .();
+								ExpectedTimes totalFastExpectedTimes = scope .();
+								weekOutStr.Append("<script>\n");
+								for (var carEntries in carClassWeekInfo.mCarEntries)
+								{
+									ExpectedTimes avgExpectedTimes = scope .();
+									ExpectedTimes fastExpectedTimes = scope .();
+
+									String str = scope .();
+									for (var carEntry in carEntries.value)
+									{
+										if ((carEntry.mIR != 0) && (carEntry.mFastestLapTime != 0))
+										{
+											avgExpectedTimes.Add(carEntry.mIR, carEntry.mAvgLapTime);
+											fastExpectedTimes.Add(carEntry.mIR, carEntry.mFastestLapTime);
+											totalAvgExpectedTimes.Add(carEntry.mIR, carEntry.mAvgLapTime);
+											totalFastExpectedTimes.Add(carEntry.mIR, carEntry.mFastestLapTime);
+										}
+									}
+
+									if (carClassWeekInfo.mCarEntries.Count > 1)
+									{
+										avgExpectedTimes.Calc();
+										fastExpectedTimes.Calc();
+										TimesOut("gAvgTimes", carEntries.key, avgExpectedTimes);
+										TimesOut("gFastTimes", carEntries.key, fastExpectedTimes);
+										weekOutStr.AppendF($"gCarClasses[\"{carEntries.key}\"] = \"{carClassName}\";\n");
+									}
+								}
+								totalAvgExpectedTimes.Calc();
+								totalFastExpectedTimes.Calc();
+								TimesOut("gAvgTimes", "ALL", totalAvgExpectedTimes);
+								TimesOut("gFastTimes", "ALL", totalFastExpectedTimes);
+
+								weekOutStr.Append("</script>\n");
+							}
+
 							weekOutStr.AppendF($"<b>{carClassName}</b><br>\n");
 							weekOutStr.AppendF("<table style=\"border-spacing: 24px 0px;\">\n");
 							List<CarEntry> totalCarEntries = scope .();
@@ -1461,7 +1666,7 @@ namespace iStats
 								totalCarEntries.AddRange(carCountKV.value);
 							}
 
-							float bestAvgLapTime = float.MaxValue;
+							/*float bestAvgLapTime = float.MaxValue;
 							float bestFastestLapTime = float.MaxValue;
 
 							for (var carEntries in carClassWeekInfo.mCarEntries.Values)
@@ -1472,14 +1677,16 @@ namespace iStats
 								GetGoodLapTime(carEntries, (entry) => entry.mFastestLapTime, out goodLapTime, out goodIR);
 								if (goodLapTime > 0)
 									bestFastestLapTime = Math.Min(goodLapTime, bestFastestLapTime);
-							}
+							}*/
 
-							String totalGoodAvgLapTime = GetGoodLapTime(totalCarEntries, .. scope .(), (entry) => entry.mAvgLapTime, bestAvgLapTime, false);
-							String totalGoodFastestLapTime = GetGoodLapTime(totalCarEntries, .. scope .(), (entry) => entry.mFastestLapTime, bestFastestLapTime, false);
+							//String totalGoodAvgLapTime = GetGoodLapTime(totalCarEntries, .. scope .(), (entry) => entry.mAvgLapTime, bestAvgLapTime, false);
+							//String totalGoodFastestLapTime = GetGoodLapTime(totalCarEntries, .. scope .(), (entry) => entry.mFastestLapTime, bestFastestLapTime, false);
 							weekOutStr.AppendF(
 								$"""
-								<tr><td width=240px></td><td style=\"text-align: right;\">Count</td><td style=\"text-align: center;\">Top Average Lap</td><td style=\"text-align: center;\">Top Fast Lap</td><tr/>
-								<tr><td>Total Entries</td><td style=\"text-align: right;\">{totalCarEntries.Count}</td><td style=\"text-align: left;\">{totalGoodAvgLapTime}</td><td style=\"text-align: left;\">{totalGoodFastestLapTime}</td></tr>\n
+								<tr><td width=240px></td><td style=\"text-align: right;\">Count</td>
+								<td style=\"text-align: center;\"><div id="ir{curIRDivIdx++}" style="display:inline"></div> Avg Lap</td>
+								<td style=\"text-align: center;\"><div id="ir{curIRDivIdx++}" style="display:inline"></div> Fast Lap</td><tr/>
+								<tr><td>Total Entries</td><td style=\"text-align: right;\">{totalCarEntries.Count}</td><td id="AVGLAP:ALL" style=\"text-align: left;\"></td><td id="FASTLAP:ALL" style=\"text-align: left;\"></td></tr>\n
 								""");
 
 							if (carClassWeekInfo.mCarEntries.Count > 1)
@@ -1489,14 +1696,14 @@ namespace iStats
 								for (var carName in carNames)
 								{
 									var carEntries = carClassWeekInfo.mCarEntries[carName];
-									String goodAvgLapTime = GetGoodLapTime(carEntries, .. scope .(), (entry) => entry.mAvgLapTime, bestAvgLapTime, true);
-									String goodFasestLapTime = GetGoodLapTime(carEntries, .. scope .(), (entry) => entry.mFastestLapTime, bestFastestLapTime, true);
+									//String goodAvgLapTime = GetGoodLapTime(carEntries, .. scope .(), (entry) => entry.mAvgLapTime, bestAvgLapTime, true);
+									//String goodFasestLapTime = GetGoodLapTime(carEntries, .. scope .(), (entry) => entry.mFastestLapTime, bestFastestLapTime, true);
 									weekOutStr.AppendF("<tr height=0px><td colspan=7><div style=\"width: 100%; height:1px; background-color:#e0e0e0;\"></div></td></tr>\n");
 									weekOutStr.AppendF(
 										$"""
 										<tr><td nowrap>{carName}</td><td style=\"text-align: right;\">{carEntries.Count}</td>
-										<td style=\"text-align: left;\">{goodAvgLapTime}</td>
-										<td style=\"text-align: left;\">{goodFasestLapTime}</td></tr>\n
+										<td id="AVGLAP:{carName}" style=\"text-align: left;\"></td>
+										<td id="FASTLAP:{carName}" style=\"text-align: left;\"></td></tr>\n
 										""");
 								}
 							}
@@ -1505,6 +1712,7 @@ namespace iStats
 							weekOutStr.AppendF(carClassWeekInfo.mOut);
 							weekOutStr.AppendF("</table>\n");
 						}
+						weekOutStr.Append("<script>IRChanged();</script>\n");
 						weekOutStr.Append(cHtmlFooter);
 
 						WriteCachedText(scope $"html/{weekInfoFilePath}", weekOutStr);
@@ -1901,6 +2109,8 @@ namespace iStats
 			
 			Console.WriteLine($"Total time: {sw.Elapsed}");
 			Console.WriteLine($"{pg.mStatsGetCount} gets, {pg.mStatsTransferCount} not from cache.");
+
+			ExpectedTimes.Finish();
 
 			return 0;
 		}
