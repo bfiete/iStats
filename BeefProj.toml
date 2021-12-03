@@ -8,13 +8,13 @@ StartupObject = "iStats.Program"
 [Configs.Debug.Win64]
 CLibType = "DynamicDebug"
 LibPaths = ["$(BeefPath)/curl.lib"]
-DebugCommandArguments = "-repeatZ"
+DebugCommandArguments = "-fastZ -repeatZ -alwayscacheZ"
 
 [Configs.Debug.Linux64]
-OtherLinkFlags = "$(LinkFlags) -lcurl"
+OtherLinkFlags = "$(LinkFlags) -lcurl ./libBeefySysLib_d.so"
 
 [Configs.Release.Linux64]
-OtherLinkFlags = "$(LinkFlags) -lcurl"
+OtherLinkFlags = "$(LinkFlags) -lcurl ./libBeefySysLib.so"
 
 [Configs.Release.Win64]
 CLibType = "Dynamic"
