@@ -6,6 +6,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections;
 using System.Text;
+using System.Security.Cryptography;
+using utils;
 
 namespace iStats
 {
@@ -21,8 +23,15 @@ namespace iStats
 	struct CarEntry
 	{
 		public int32 mIR;
+		public float mQualiLapTime;
 		public float mAvgLapTime;
 		public float mFastestLapTime;
+	}
+
+	struct CarEntryEx
+	{
+		public CarEntry mCarEntry;
+		public RacingSubSession mRacingSubsession;
 	}
 
 	class CarClassEntry
@@ -35,6 +44,20 @@ namespace iStats
 		public int32 mId;
 		public Dictionary<String, CarClassEntry> mCarClassDict = new .() ~ DeleteDictionaryAndKeysAndValues!(_);
 		public int32 mHighestIR;
+
+		public int32 mTrackId;
+		public String mSimulatedStartTime = new .() ~ delete _;
+		public int32 mWeatherRH;
+		public int32 mTempUnits;
+		public float mTempValue;
+		public int32 mWindUnits;
+		public float mWindValue;
+		public int32 mWindDir;
+		public int32 mWeatherSkies;
+		public int32 mWeatherType;
+		public bool mLeaveMarbles;
+		public int32 mRubberLevelQualify;
+		public int32 mRubberLevelRace;
 	}
 
 	class RacingSession
@@ -120,24 +143,102 @@ namespace iStats
 		ScanForNewSeasonIds
 	}
 
+	enum CacheCompressKind
+	{
+		case None;
+		case Deflate;
+		case ReducedDeflate;
+
+		public void Decompress(Span<uint8> inData, String outData)
+		{
+			switch (this)
+			{
+			case .None:
+				outData.Set(StringView((.)inData.Ptr, inData.Length));
+			case .Deflate:
+				Compression.Decompress(inData, outData);
+			case .ReducedDeflate:
+				List<uint8> decompData = scope .();
+				Compression.Decompress(inData, decompData);
+				StructuredCompress sc = scope .();
+				sc.Decompress(decompData, outData);
+			}
+		}
+	}
+
 	class CacheEntry
 	{
 		public String mKey;
-		public String mData ~ delete _;
+		public List<uint8> mData ~ delete _;
+		public CacheCompressKind mCompressKind;
+		public MD5Hash mHash;
 		public int32 mDBBucketIdx = -1;
 		public bool mDirty;
+		public bool mNeedsDataRewrite;
 		public Stream mDBStream;
 		public int64 mDBStreamPos;
-
+		
 		public void Get(String data)
 		{
+			gApp.[Friend]mDataSW.Start();
+			defer gApp.[Friend]mDataSW.Stop();
+
 			if (mData != null)
 			{
-				data.Set(mData);
+				mCompressKind.Decompress(mData, data);
 				return;
 			}
+
 			mDBStream.Position = mDBStreamPos;
-			mDBStream.ReadStrSized32(data);
+			if (mCompressKind != .None)
+			{
+				int32 len = mDBStream.Read<int32>();
+				List<uint8> compData = scope .();
+				compData.GrowUnitialized(len);
+				mDBStream.TryRead(compData);
+				mCompressKind.Decompress(compData, data);
+
+				// Setting to raw data
+				/*if (data.Length < 16384)
+				{
+					mDirty = true;
+					SetData(data);
+				}*/
+			}
+			else
+			{
+				mDBStream.ReadStrSized32(data);
+			}
+		}
+
+		public void SetData(StringView data, bool allowCompress = true)
+		{
+			gApp.[Friend]mDataSW.Start();
+			defer gApp.[Friend]mDataSW.Stop();
+
+			delete mData;
+			if ((data.Length < 16384) || (!allowCompress))
+			{
+				mCompressKind = .None;
+				mData = new List<uint8>(data.Length);
+				mData.AddRange(.((.)data.Ptr, data.Length));
+			}
+			else if (data.StartsWith('{'))
+			{
+				mCompressKind = .ReducedDeflate;
+				List<uint8> reducedData = scope .();
+				StructuredCompress sc = scope .();
+				sc.Compress(data, reducedData);
+				mData = new List<uint8>();
+				Compression.Compress(reducedData, mData);
+			}
+			else
+			{
+				mCompressKind = .Deflate;
+				mData = new List<uint8>();
+				Compression.Compress(.((.)data.Ptr, data.Length), mData);
+			}
+			mHash = Program.Hash(data);
 		}
 
 		public void MakeEmpty()
@@ -159,13 +260,21 @@ namespace iStats
 		public bool mDirty;
 	}
 
+	class CarInfo
+	{
+		public String mName = new .() ~ delete _;
+	}
+
 	class Program
 	{
-		const int32 cCacheMagic = 0x4BF8512A;
+		const int32 cCacheMagicOld = 0x4BF8512A;
+		const int32 cCacheMagic = 0x4BF8512B;
+
 		Dictionary<String, RacingSeries> mSeriesDict = new .() ~ DeleteDictionaryAndValues!(_);
 		Dictionary<int, String> mTrackNames = new .() ~ DeleteDictionaryAndValues!(_);
 		Dictionary<int, int> mCurrentSeriesIdWeek = new .() ~ delete _;
 		Dictionary<String, CacheEntry> mCache = new .() ~ DeleteDictionaryAndKeysAndValues!(_);
+		Dictionary<int, CarInfo> mCarInfo = new .() ~ DeleteDictionaryAndValues!(_);
 		int32 mCurDBBucketIdx;
 		int32 mCurDBBucketCount;
 		List<Stream> mDBStreams = new .() ~ DeleteContainerAndItems!(_);
@@ -182,6 +291,16 @@ namespace iStats
 		int mLowestSeasonId = 2626; // From Jan 2020
 		int mHighestSeasonId = 0;
 		HashSet<int32> mRetrievedCurrentSeasonIdSet = new .() ~ delete _;
+		Stopwatch mTransferSW = new .() ~ delete _;
+		Stopwatch mDataSW = new .() ~ delete _;
+
+		HashSet<String> mFileFindDirs = new .() ~ DeleteContainerAndItems!(_);
+		HashSet<String> mFileFindFiles = new .() ~ DeleteContainerAndItems!(_);
+
+		public this()
+		{
+			gApp = this;
+		}
 
 		void WriteCache(bool forceWrite = false)
 		{
@@ -251,7 +370,14 @@ namespace iStats
 					{
 						cacheEntry.mData = new .();
 						cacheEntry.mDBStream.Position = cacheEntry.mDBStreamPos;
-						cacheEntry.mDBStream.ReadStrSized32(cacheEntry.mData);
+						cacheEntry.mData.GrowUnitialized((int32)cacheEntry.mDBStream.Read<int32>());
+						cacheEntry.mDBStream.TryRead(cacheEntry.mData);
+						if (cacheEntry.mNeedsDataRewrite)
+						{
+							String data = scope .();
+							cacheEntry.Get(data);
+							cacheEntry.SetData(data);
+						}
 						streamToClose = cacheEntry.mDBStream;
 						cacheEntry.mDBStream = null;
 					}
@@ -268,16 +394,19 @@ namespace iStats
 				FileStream fs = new .();
 				fs.Create(scope $"db/db{@cacheBucket.Index:000000}.dat");
 				fs.Write(cCacheMagic);
+				fs.Write((int32)2); // version
 				for (var cacheEntry in cacheBucket.mEntries)
 				{
 					fs.WriteStrSized32(cacheEntry.mKey);
+					fs.Write<uint8>((uint8)cacheEntry.mCompressKind);
 					//cacheEntry.mDBStream = fs;
 					//cacheEntry.mDBStreamPos = fs.Position;
 
 					cacheEntry.mDBStream = null;
 					cacheEntry.mDBStreamPos = -2;
 
-					fs.WriteStrSized32(cacheEntry.mData);
+					fs.Write<int32>((.)cacheEntry.mData.Count);
+					fs.TryWrite(cacheEntry.mData);
 					DeleteAndNullify!(cacheEntry.mData);
 				}
 				fs.Write((int32)0);
@@ -318,6 +447,12 @@ namespace iStats
 			}
 		}
 
+		struct DBStatEntry
+		{
+			public int32 mCount;
+			public int64 mSize;
+		}
+
 		void ReadCache()
 		{
 			/*FileStream fs = scope .();
@@ -347,6 +482,13 @@ namespace iStats
 
 			int truncEntries = 0;
 
+			Dictionary<String, DBStatEntry> dbStats = scope .();
+			defer
+			{
+				for (var key in dbStats.Keys)
+					delete key;
+			}
+
 			for (int32 bucketIdx = 0; true; bucketIdx++)
 			{
 				FileStream fs = new .();
@@ -358,8 +500,16 @@ namespace iStats
 
 				mDBStreams.Add(fs);
 
+				int32 version = 0;
+
 				int cacheMagic = fs.Read<int32>().Value;
-				Runtime.Assert(cacheMagic == cCacheMagic);
+				if (cacheMagic == cCacheMagicOld)
+					version = 0;
+				else
+				{
+					Runtime.Assert(cacheMagic == cCacheMagic);
+					version = fs.Read<int32>();
+				}
 
 				mCurDBBucketIdx = bucketIdx;
 				mCurDBBucketCount = 0;
@@ -379,15 +529,24 @@ namespace iStats
 						break;
 					}
 
-					bool useStreamPtr = true;
+					//bool useStreamPtr = true;
 
 					CacheEntry cacheEntry = new .();
 					cacheEntry.mKey = key;
 					cacheEntry.mDBBucketIdx = bucketIdx;
+					if (version < 2)
+					{
+						cacheEntry.mDirty = true;
+						cacheEntry.mNeedsDataRewrite = true;
+					}
 
-					if (useStreamPtr)
+					//if (useStreamPtr)
 					{
 						cacheEntry.mDBStream = fs;
+						if (version == 1)
+							cacheEntry.mCompressKind = .Deflate;
+						else if (version >= 2)
+							cacheEntry.mCompressKind = (.)fs.Read<uint8>().Value;
 						cacheEntry.mDBStreamPos = fs.Position;
 
 						int pos = fs.Position;
@@ -402,12 +561,26 @@ namespace iStats
 							delete cacheEntry;
 							break;
 						}
+
+						String dbKey = scope String(key);
+						if (dbKey.StartsWith("html/"))
+							dbKey = "html";
+						int eqPos = dbKey.IndexOf('=');
+						if (eqPos != -1)
+							dbKey.RemoveToEnd(eqPos);
+						if (dbStats.TryAdd(dbKey, var keyPtr, var valuePtr))
+						{
+							*keyPtr = new String(dbKey);
+						}
+						valuePtr.mCount++;
+						valuePtr.mSize += len;
 					}
-					else
+					/*else
 					{
 						cacheEntry.mData = new .();
+
 						fs.ReadStrSized32(cacheEntry.mData);
-					}
+					}*/
 					mCache[key] = cacheEntry;
 					mCurDBBucketCount++;
 				}
@@ -426,12 +599,14 @@ namespace iStats
 		void MakeUTF8(String str)
 		{
 			bool isAsciiEX = false;
-			for (char8 c in str.RawChars)
+			char8* cPtr = str.Ptr;
+			for (int i < str.[Friend]mLength)
 			{
+				char8 c = cPtr[i];
 				if (c >= '\x80')
 				{
-					if ((str[Math.Max(0, @c.Index - 1)] < '\x80') &&
-						(str[Math.Min(@c.Index + 1, str.Length - 1)] < '\x80'))
+					if ((str[Math.Max(0, i - 1)] < '\x80') &&
+						(str[Math.Min(i + 1, str.Length - 1)] < '\x80'))
 						isAsciiEX = true;
 				}
 			}
@@ -469,6 +644,40 @@ namespace iStats
 			}
 		}
 
+		void SetCache(StringView url, StringView result)
+		{
+			if (mCache.TryAddAlt(url, var keyPtr, var valuePtr))
+			{
+				*keyPtr = new String(url);
+				CacheEntry cacheEntry = new CacheEntry();
+				cacheEntry.mKey = *keyPtr;
+				cacheEntry.SetData(result);
+				*valuePtr = cacheEntry;
+			}
+			else
+			{
+				CacheEntry cacheEntry = *valuePtr;
+				
+				if (cacheEntry.mData == null)
+				{
+					String prevData = scope .();
+					cacheEntry.Get(prevData);
+					/*cacheEntry.mDBStream.Position = cacheEntry.mDBStreamPos;
+					cacheEntry.mDBStream.ReadStrSized32(prevData);*/
+					if (prevData == result)
+						return;
+					cacheEntry.MakeEmpty();
+				}
+				else
+				{
+					if (cacheEntry.mHash == Hash(result))
+						return;
+				}
+				cacheEntry.SetData(result);
+				cacheEntry.mDirty = true;
+			}
+		}
+
 		public Result<void> Get(StringView url, String result, bool allowCache = true)
 		{
 			mStatsGetCount++;
@@ -477,9 +686,12 @@ namespace iStats
 			{
 				if (mCache.TryGetAlt(url, var cacheKey, var cacheEntry))
 				{
-					if (cacheEntry.mData != null)
+					cacheEntry.Get(result);
+					MakeUTF8(result);
+
+					/*if (cacheEntry.mData != null)
 					{
-						result.Append(cacheEntry.mData);
+						cacheEntry.Get(result);
 						MakeUTF8(result);
 					}
 					else
@@ -487,44 +699,14 @@ namespace iStats
 						cacheEntry.mDBStream.Position = cacheEntry.mDBStreamPos;
 						cacheEntry.mDBStream.ReadStrSized32(result);
 						MakeUTF8(result);
-					}
+					}*/
 					
 					return .Ok;
 				}
 			}
 
-			void SetCache()
-			{
-				if (mCache.TryAddAlt(url, var keyPtr, var valuePtr))
-				{
-					*keyPtr = new String(url);
-					CacheEntry cacheEntry = new CacheEntry();
-					cacheEntry.mKey = *keyPtr;
-					cacheEntry.mData = new String(result);
-					*valuePtr = cacheEntry;
-				}
-				else
-				{
-					CacheEntry cacheEntry = *valuePtr;
-					
-					if (cacheEntry.mData == null)
-					{
-						String prevData = scope .();
-						cacheEntry.mDBStream.Position = cacheEntry.mDBStreamPos;
-						cacheEntry.mDBStream.ReadStrSized32(prevData);
-						if (prevData == result)
-							return;
-						cacheEntry.MakeEmpty();
-					}
-					else
-					{
-						if (cacheEntry.mData == result)
-							return;
-					}
-					cacheEntry.mData.Set(result);
-					cacheEntry.mDirty = true;
-				}
-			}
+			if (url.StartsWith("!"))
+				return .Err;
 
 			String cleanString = scope .();
 			for (var c in url.RawChars)
@@ -541,7 +723,7 @@ namespace iStats
 			if ((allowCache) && (File.ReadAllText(cacheFilePath, result) case .Ok))
 			{
 				MakeUTF8(result);
-				SetCache();
+				SetCache(url, result);
 				return .Ok;
 			}
 
@@ -550,6 +732,9 @@ namespace iStats
 				Login();
 				mLoggedIn = true;
 			}
+
+			mTransferSW.Start();
+			defer mTransferSW.Stop();
 
 			mStatsTransferCount++;
 			Transfer trans = scope .(mCurl);
@@ -563,7 +748,7 @@ namespace iStats
 				//File.WriteAllText(cacheFilePath, sv);
 				//String contentType = trans.GetContentType(.. scope .());
 				MakeUTF8(result);
-				SetCache();
+				SetCache(url, result);
 				return .Ok;
 			default:
 				return .Err;
@@ -572,6 +757,9 @@ namespace iStats
 
 		public void Login()
 		{
+			mTransferSW.Start();
+			defer mTransferSW.Stop();
+
 			Transfer trans = scope .(mCurl);
 			mCurl.SetOpt(.CookieFile, "cookies.txt");
 			trans.InitPost("https://members.iracing.com/membersite/Login", scope $"username={mUserName}&password={mPassword}");
@@ -588,6 +776,7 @@ namespace iStats
 		void ParseCSV(StringView str, List<StringView> outStrings)
 		{
 			int quoteStart = -1;
+			char8 prevC = 0;
 			for (var c in str.RawChars)
 			{
 				if (c == '"')
@@ -600,7 +789,34 @@ namespace iStats
 						quoteStart = -1;
 					}
 				}
+				if ((c == ',') && (prevC == ',') && (quoteStart == -1))
+					outStrings.Add(default);
+				prevC = c;
+				
 			}
+		}
+
+		void FixJSONString(String str)
+		{
+			str.Replace('+', ' ');
+			for (int i < str.Length)
+			{
+				char8 c = str[i];
+				if ((c == '%') && (i + 2 < str.Length))
+				{
+					if (int val = int32.Parse(str.Substring(i + 1, 2), .HexNumber))
+					{
+						str[i] = (char8)val;
+						str.Remove(i + 1, 2);
+					}
+				}
+			}
+		}
+
+		void StringSetFromJSON(String str, StringView value)
+		{
+			str.Set(value);
+			FixJSONString(str);
 		}
 
 		void RetrieveSeriesDo()
@@ -646,6 +862,36 @@ namespace iStats
 					}
 				}
 			}
+
+			findStr = "var CarListing = extractJSON('";
+			findIdx = doInfo.IndexOf(findStr);
+			if (findIdx != -1)
+			{
+				int idx = findIdx + findStr.Length;
+				int endIdx = doInfo.IndexOf('\'', idx);
+				if (endIdx != -1)
+				{
+					StringView foundStr = doInfo.Substring(idx, endIdx - idx);
+
+					StructuredData sd = scope .();
+					sd.LoadFromString(foundStr);
+
+					for (var result in sd.Enumerate())
+					{
+						int32 id = sd.GetInt("id");
+						bool added = mCarInfo.TryAdd(id, var keyPtr, var valuePtr);
+						if (!added)
+							continue;
+							
+						CarInfo carInfo = new .();
+						*valuePtr = carInfo;
+
+						sd.GetString("skuname", carInfo.mName);
+						FixJSONString(carInfo.mName);
+					}
+				}
+			}
+
 			Console.WriteLine();
 			Console.Write($"Retrieved Season Ids:");
 			List<int32> seasonIds = scope .(mRetrievedCurrentSeasonIdSet.GetEnumerator());
@@ -670,7 +916,7 @@ namespace iStats
 				int32 seasonYear = -1;
 				int32 seasonNum = -1;
 
-				StringView seriesName;
+				StringView seriesName = default;
 
 				WeekLoop: for (int32 week in 0...12)
 				{
@@ -772,65 +1018,346 @@ namespace iStats
 						RacingSession racingSession = null;
 						RacingSubSession racingSubSession = null;
 
+						bool newWay = seasonId > 3025;
+
+						//newWay = false;
+
 						String subsessionData = scope .();
-						Get(scope $"https://members.iracing.com/membersite/member/GetEventResultsAsCSV?subsessionid={subSessionId}", subsessionData);
+						String subsessionDataName = scope $"!SUBSESSION#{subSessionId}";
 
-						for (var line in subsessionData.Split('\n'))
+						Get(subsessionDataName, subsessionData).IgnoreError();
+
+						if ((newWay) && (subsessionData.IsEmpty))
 						{
-							if (@line.Pos == 0)
-								continue;
+							String subsessionResults = scope .();
+							Get(scope $"https://members.iracing.com/membersite/member/GetSubsessionResults?subsessionID={subSessionId}", subsessionResults);
 
-							List<StringView> elements = scope .();
-							ParseCSV(line, elements);
+							int keyStart = -1;
+							int keyEnd = -1;
 
-							if (elements.Count < 35)
-								continue;
+							String seriesNameStr = scope .();
+							StringView windSpeed;
+							StringView temp;
 
-							var finPos = int32.Parse(elements[0]).GetValueOrDefault();
-							//1 carId
-							var carName = elements[2];
-							var carClassId = elements[3];
-							var carClass = elements[4];
-							//5 TeamId
-							//6 custID
-							var name = elements[7];
-							//8 startPos
-							//9 curNum
-							//10 outId
-							//11 out
-							//12 interval
-							//13 lapsLed
-							//14 qualiTime
-							var avgLapTime = elements[15];
-							var fastestLapTime = elements[16];
-							//17 fastLapNum
-							//18 lapsComp
-							//19 inc
-							//20 pts
-							//21 clubPts
-							//22 div
-							//23 clubID
-							//24 club
-							var oldIRating = int32.Parse(elements[25]).GetValueOrDefault();
-							//26 newIRating
-							//27 oldLicense
-							//28 oldLicenseSub
-							//29 newLicense
-							//30 newLicenseSub
-							seriesName = elements[31];
-							//32 maxFuelFillPct
-							//33 weightPenalty
-							//34 aggPts
+							int32 finPos = 0;
+							int32 carID = 0;
+							String carClass = scope .();
+							StringView incidents = default;
+							StringView sessionKind = default;
+							String name = scope .();
+							float avgLapTime = 0;
+							float fastestLapTime = 0;
+							int32 oldIRating = 0;
 
-							seriesName.Trim();
-							if ((seriesName.Contains("13th Week")) || (week+1 == 13))
+							Dictionary<String, float> qualiTimes = scope .();
+							defer
 							{
-								// We don't track 13th week races, and these just clutter up our Series.txt
-								Console.Write($" Skipping {seriesName} Week {week + 1}");
-								break RaceLoop;
+								for (var qualiKey in qualiTimes.Keys)
+									delete qualiKey;
 							}
 
-							if (series == null)
+							void Trim(ref StringView sv)
+							{
+								sv.Trim();
+								if ((sv.StartsWith('\"')) && (sv.EndsWith('\"')))
+								{
+									sv.RemoveFromStart(1);
+									sv.RemoveFromEnd(1);
+								}
+							}
+
+							racingSubSession = new RacingSubSession();
+							defer
+							{
+								if (racingSubSession.mId == 0)
+									delete racingSubSession;
+							}
+
+							int driverIdx = 0;
+
+							char8* subsessionResultsPtr = subsessionResults.Ptr;
+							for (int i < subsessionResults.[Friend]mLength)
+							{
+								char8 c = subsessionResultsPtr[i];
+								if ((c == '{') || (c == '['))
+								{
+									keyStart = i + 1;
+									keyEnd = -1;
+								}
+								else if ((c == ']') || (c == '}') || (c == ','))
+								{
+									if (keyEnd != -1)
+									{
+										StringView key = subsessionResults.Substring(keyStart, keyEnd - keyStart);
+										Trim(ref key);
+										StringView value = subsessionResults.Substring(keyEnd + 1, i - keyEnd - 1);
+										Trim(ref value);
+
+										String keyStr = key.Intern();
+
+										bool appendKV = false;
+
+										switch ((Object)keyStr)
+										{
+										case "series_name":
+											Debug.Assert(racingSubSession.mId == 0);
+
+											StringSetFromJSON(seriesNameStr, value);
+											seriesName = seriesNameStr;
+											if ((seriesName.Contains("13th Week")) || (week+1 == 13))
+											{
+												SetCache(subsessionDataName, ":skip");
+
+												// We don't track 13th week races, and these just clutter up our Series.txt
+												Console.Write($" Skipping {seriesName} Week {week + 1}");
+												break RaceLoop;
+											}
+
+											if (series == null)
+											{
+												//Console.WriteLine("{1:seriesName} {0:dd} {0:MMMM} {0:yyyy}, {0:hh}:{0:mm}:{0:ss} {0:tt} ", dt, seriesName);
+
+												if (!wroteSeries)
+												{
+													Console.Write(" Season:{0} {1} @ {2:MMMM} {2:dd} {2:yyyy}", seasonNum + 1, seriesName, sessionDate);
+													wroteSeries = true;
+												}
+
+												int remapItrCount  = 0;
+												StringView useSeriesName = seriesName;
+												while (true)
+												{
+													if (mSeriesDict.TryAddAlt(useSeriesName, var namePtr, var seriesPtr))
+													{
+														series = *seriesPtr = new .();
+														series.mName.Set(useSeriesName);
+														*namePtr = series.mName;
+													}
+													else
+													{
+														series = *seriesPtr;
+													}
+
+													if (series.mRemapName == null)
+														break;
+													useSeriesName = series.mRemapName;
+
+													if (++remapItrCount >= 100)
+													{
+														Console.WriteLine($" ERROR: remap loop detected in {seriesName}");
+														break;
+													}
+												}
+
+												if ((isCurrentSeason) && (seasonId >= series.mCurrentSeasonId))
+												{
+													series.mCurrentSeasonId = seasonId;
+													series.mCurrentSeasonWeek = week;
+												}
+
+												if (racingWeek == null)
+												{
+													racingWeek = new RacingWeek();
+													racingWeek.mSeries = series;
+													racingWeek.mSeasonId = seasonId;
+													racingWeek.mWeekNum = week;
+													racingWeek.mSeasonYear = seasonYear;
+													racingWeek.mSeasonNum = seasonNum;
+													if (series.mWeeks.FindIndex(scope (checkWeek) => checkWeek.TotalWeekIdx == racingWeek.TotalWeekIdx) != -1)
+													{
+														racingWeek.mIsDup = true;
+														series.mDupWeeks.Add(racingWeek);
+													}
+													else
+														series.mWeeks.Add(racingWeek);
+
+													int totalWeekIdx = racingWeek.TotalWeekIdx;
+													DecodeTotalWeekIdx(totalWeekIdx, var curYear, var curSeason, var curWeek);
+
+													/*if ((curYear == 2021) && (curSeason+1 == 4))
+													{
+														NOP!();
+													}*/
+												}
+
+												int weekDayIdx = (int)sessionDate.DayOfWeek;
+												weekDayIdx = (weekDayIdx + 5)  % 7;
+												while (weekDayIdx >= racingWeek.mRacingDays.Count)
+													racingWeek.mRacingDays.Add(null);
+
+												if ((weekDayIdx < 6) || (racingWeek.mTrackId == -1)) // Try to not catch rollover
+													racingWeek.mTrackId = trackId;
+
+												var racingDay = racingWeek.mRacingDays[weekDayIdx];
+												if (racingDay == null)
+													racingWeek.mRacingDays[weekDayIdx] = racingDay = new RacingDay();
+
+												racingSession = null;
+												if (racingDay.mSessions.TryAdd(sessionId, var sessionIdPtr, var sessionPtr))
+												{
+													racingSession = *sessionPtr = new RacingSession();
+													racingSession.mSessionDate = sessionDate;
+												}
+												else
+													racingSession = *sessionPtr;
+												
+												racingSubSession.mId = subSessionId;
+												racingSession.mSubSessions.Add(racingSubSession);
+											}
+										case "trackid":
+											racingSubSession.mTrackId = int32.Parse(value).GetValueOrDefault();
+										case "simulatedstarttime":
+											StringSetFromJSON(racingSubSession.mSimulatedStartTime, value);
+											value = racingSubSession.mSimulatedStartTime;
+											appendKV = true;
+										case "weather_temp_value":
+											racingSubSession.mTempValue = float.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_temp_units":
+											racingSubSession.mTempUnits = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_rh":
+											racingSubSession.mWeatherRH = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_wind_dir":
+											racingSubSession.mWindDir = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_wind_speed_value":
+											racingSubSession.mWindValue = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_wind_speed_units":
+											racingSubSession.mWindUnits = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_wind_dir":
+											racingSubSession.mWindDir = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_skies":
+											racingSubSession.mWeatherSkies = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "weather_type":
+											racingSubSession.mWeatherType = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "leavemarbles":
+											racingSubSession.mLeaveMarbles = int32.Parse(value).GetValueOrDefault() != 0;
+											appendKV = true;
+										case "rubberlevel_qualify":
+											racingSubSession.mRubberLevelQualify = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+										case "rubberlevel_race":
+											racingSubSession.mRubberLevelRace = int32.Parse(value).GetValueOrDefault();
+											appendKV = true;
+
+										case "oldirating":
+											oldIRating = int32.Parse(value).Value;
+										case "incidents":
+										case "carid":
+											carID = int32.Parse(value).Value;
+										case "simsesname":
+											sessionKind = value;
+										case "ccName":
+											StringSetFromJSON(carClass, value);
+										case "displayname":
+											StringSetFromJSON(name, value);
+										case "avglap":
+											avgLapTime = Math.Max(float.Parse(value).Value / 10000.0f, 0);
+										case "bestlaptime":
+											fastestLapTime = Math.Max(float.Parse(value).Value / 10000.0f, 0);
+										}
+
+										if (appendKV)
+										{
+											subsessionData.AppendF($":{key}={value}\n");
+										}
+									}
+
+									keyStart = -1;
+									keyEnd = -1;
+
+									if (c == '}')
+									{
+										if (sessionKind == "QUALIFY")
+										{
+											if (fastestLapTime > 0)
+											{
+												if (qualiTimes.TryAdd(name, var keyPtr, var valuePtr))
+												{
+													*keyPtr = new String(name);
+													*valuePtr = fastestLapTime;
+												}
+											}
+										}
+										else if (sessionKind == "RACE")
+										{
+											if (oldIRating > 100)
+											{
+												if (racingSubSession.mCarClassDict.TryAddAlt(carClass, var carClassNamePtr, var carClassPtr))
+												{
+													*carClassNamePtr = new String(carClass);
+													var carClassEntry = *carClassPtr = new CarClassEntry();
+												}
+												racingSubSession.mHighestIR = Math.Max(racingSubSession.mHighestIR, oldIRating);
+
+												CarEntry carEntry;
+												carEntry.mIR = oldIRating;
+
+												carEntry.mAvgLapTime = avgLapTime;
+												carEntry.mFastestLapTime = fastestLapTime;
+												carEntry.mQualiLapTime = 0;
+												///
+												{
+													if (qualiTimes.TryGet(name, var key, var value))
+														carEntry.mQualiLapTime = value;
+												}
+
+												Debug.Assert(carEntry.mQualiLapTime >= 0);
+
+												StringView carName = "?";
+												///
+												{
+													if (mCarInfo.TryGet(carID, var key, var value))
+													{
+														carName = value.mName;
+													}
+												}
+
+												var carClassEntry = *carClassPtr;
+												if (carClassEntry.mCarDict.TryAddAlt(carName, var carNamePtr, var listPtr))
+												{
+													*carNamePtr = new String(carName);
+													*listPtr = new List<CarEntry>();
+												}
+												(*listPtr).Add(carEntry);
+
+												int carClassId = 0;
+												String driverName = name;
+												subsessionData.AppendF($"\"{finPos}\",,\"{carName}\",,\"{carClass}\",,,\"{driverName}\",,,,,,,");
+												subsessionData.AppendF($"\"{carEntry.mQualiLapTime:0.0##}\",\"{avgLapTime:0.0##}\",\"{fastestLapTime:0.0##}\",,,,,,,,,\"{oldIRating}\",,,,,,,,,,\n");
+												driverIdx++;
+											}
+										}
+
+										sessionKind = default;
+									}
+
+									if (c == ',')
+										keyStart = i + 1;
+								}
+								else if (c == ':')
+								{
+									if (keyStart != -1)
+										keyEnd = i;
+								}
+							}
+							if (series != null)
+								subsessionData.Insert(0, scope $":series_name={series.mName}\n");
+							SetCache(subsessionDataName, subsessionData);
+						}
+						else
+						{
+							if (subsessionData.IsEmpty)
+								Get(scope $"https://members.iracing.com/membersite/member/GetEventResultsAsCSV?subsessionid={subSessionId}", subsessionData);
+
+							void InitSubsession(StringView seriesName)
 							{
 								//Console.WriteLine("{1:seriesName} {0:dd} {0:MMMM} {0:yyyy}, {0:hh}:{0:mm}:{0:ss} {0:tt} ", dt, seriesName);
 
@@ -924,37 +1451,142 @@ namespace iStats
 								racingSession.mSubSessions.Add(racingSubSession);
 							}
 
-							if (racingSubSession.mCarClassDict.TryAddAlt(carClass, var carClassNamePtr, var carClassPtr))
+							for (var line in subsessionData.Split('\n'))
 							{
-								*carClassNamePtr = new String(carClass);
-								var carClassEntry = *carClassPtr = new CarClassEntry();
+								if (line.StartsWith(':'))
+								{
+									int eqPos = line.IndexOf('=', 1);
+									if (eqPos == -1)
+										continue;
+									
+									StringView key = line.Substring(1, eqPos - 1);
+									StringView value = line.Substring(eqPos + 1);
+									switch (key)
+									{
+									case "series_name":
+										seriesName = value;
+										InitSubsession(seriesName);
+									case "simulatedstarttime":
+										StringSetFromJSON(racingSubSession.mSimulatedStartTime, value);
+									case "weather_temp_value":
+										racingSubSession.mTempValue = float.Parse(value).GetValueOrDefault();
+									case "weather_temp_units":
+										racingSubSession.mTempUnits = int32.Parse(value).GetValueOrDefault();
+									case "weather_rh":
+										racingSubSession.mWeatherRH = int32.Parse(value).GetValueOrDefault();
+									case "weather_wind_dir":
+										racingSubSession.mWindDir = int32.Parse(value).GetValueOrDefault();
+									case "weather_wind_speed_value":
+										racingSubSession.mWindValue = int32.Parse(value).GetValueOrDefault();
+									case "weather_wind_speed_units":
+										racingSubSession.mWindUnits = int32.Parse(value).GetValueOrDefault();
+									case "weather_wind_dir":
+										racingSubSession.mWindDir = int32.Parse(value).GetValueOrDefault();
+									case "weather_skies":
+										racingSubSession.mWeatherSkies = int32.Parse(value).GetValueOrDefault();
+									case "weather_type":
+										racingSubSession.mWeatherType = int32.Parse(value).GetValueOrDefault();
+									case "leavemarbles":
+										racingSubSession.mLeaveMarbles = int32.Parse(value).GetValueOrDefault() != 0;
+									case "rubberlevel_qualify":
+										racingSubSession.mRubberLevelQualify = int32.Parse(value).GetValueOrDefault();
+									case "rubberlevel_race":
+										racingSubSession.mRubberLevelRace = int32.Parse(value).GetValueOrDefault();
+									}
+
+									continue;
+								}
+
+								if (@line.Pos == 0)
+									continue;
+
+								List<StringView> elements = scope .(64);
+								ParseCSV(line, elements);
+
+								if (elements.Count < 35)
+									continue;
+
+								var finPos = int32.Parse(elements[0]).GetValueOrDefault();
+								//1 carId
+								var carName = elements[2];
+								//var carClassId = elements[3];
+								var carClass = elements[4];
+								//5 TeamId
+								//6 custID
+								var name = elements[7];
+								//8 startPos
+								//9 curNum
+								//10 outId
+								//11 out
+								//12 interval
+								//13 lapsLed
+								var qualiTime = elements[14];
+								var avgLapTime = elements[15];
+								var fastestLapTime = elements[16];
+								//17 fastLapNum
+								//18 lapsComp
+								//19 inc
+								//20 pts
+								//21 clubPts
+								//22 div
+								//23 clubID
+								//24 club
+								var oldIRating = int32.Parse(elements[25]).GetValueOrDefault();
+								//26 newIRating
+								//27 oldLicense
+								//28 oldLicenseSub
+								//29 newLicense
+								//30 newLicenseSub
+								if (!elements[31].IsEmpty)
+									seriesName = elements[31];
+								//32 maxFuelFillPct
+								//33 weightPenalty
+								//34 aggPts
+
+								seriesName.Trim();
+								if ((seriesName.Contains("13th Week")) || (week+1 == 13))
+								{
+									// We don't track 13th week races, and these just clutter up our Series.txt
+									Console.Write($" Skipping {seriesName} Week {week + 1}");
+									break RaceLoop;
+								}
+
+								if (series == null)
+									InitSubsession(seriesName);
+
+								if (racingSubSession.mCarClassDict.TryAddAlt(carClass, var carClassNamePtr, var carClassPtr))
+								{
+									*carClassNamePtr = new String(carClass);
+									var carClassEntry = *carClassPtr = new CarClassEntry();
+								}
+								racingSubSession.mHighestIR = Math.Max(racingSubSession.mHighestIR, oldIRating);
+
+								CarEntry carEntry;
+								carEntry.mIR = oldIRating;
+
+								float ParseLapTime(StringView lapTimeStr)
+								{
+									int timeColonPos = lapTimeStr.IndexOf(':');
+									if (timeColonPos != -1)
+										return int.Parse(lapTimeStr.Substring(0, timeColonPos)).GetValueOrDefault()*60 + float.Parse(lapTimeStr.Substring(timeColonPos + 1)).GetValueOrDefault();
+									else
+										return float.Parse(lapTimeStr).GetValueOrDefault();
+								}
+
+								carEntry.mQualiLapTime = ParseLapTime(qualiTime);
+								carEntry.mAvgLapTime = ParseLapTime(avgLapTime);
+								carEntry.mFastestLapTime = ParseLapTime(fastestLapTime);
+
+								var carClassEntry = *carClassPtr;
+								if (carClassEntry.mCarDict.TryAddAlt(carName, var carNamePtr, var listPtr))
+								{
+									*carNamePtr = new String(carName);
+									*listPtr = new List<CarEntry>();
+								}
+								(*listPtr).Add(carEntry);
+
+								//Console.WriteLine("DateTimeOffset (other format) = {0:dd} {0:MMMM} {0:yyyy}, {0:hh}:{0:mm}:{0:ss} {0:tt} ", dt);
 							}
-							racingSubSession.mHighestIR = Math.Max(racingSubSession.mHighestIR, oldIRating);
-
-							CarEntry carEntry;
-							carEntry.mIR = oldIRating;
-
-							float ParseLapTime(StringView lapTimeStr)
-							{
-								int timeColonPos = lapTimeStr.IndexOf(':');
-								if (timeColonPos != -1)
-									return int.Parse(lapTimeStr.Substring(0, timeColonPos)).GetValueOrDefault()*60 + float.Parse(lapTimeStr.Substring(timeColonPos + 1)).GetValueOrDefault();
-								else
-									return float.Parse(lapTimeStr).GetValueOrDefault();
-							}
-
-							carEntry.mAvgLapTime = ParseLapTime(avgLapTime);
-							carEntry.mFastestLapTime = ParseLapTime(fastestLapTime);
-
-							var carClassEntry = *carClassPtr;
-							if (carClassEntry.mCarDict.TryAddAlt(carName, var carNamePtr, var listPtr))
-							{
-								*carNamePtr = new String(carName);
-								*listPtr = new List<CarEntry>();
-							}
-							(*listPtr).Add(carEntry);
-
-							//Console.WriteLine("DateTimeOffset (other format) = {0:dd} {0:MMMM} {0:yyyy}, {0:hh}:{0:mm}:{0:ss} {0:tt} ", dt);
 						}
 
 						hadResults = true;
@@ -977,7 +1609,7 @@ namespace iStats
 		class CarClassWeekInfo
 		{
 			public String mOut = new String() ~ delete _;
-			public Dictionary<StringView, List<CarEntry>> mCarEntries = new .() ~ DeleteDictionaryAndValues!(_);
+			public Dictionary<StringView, List<CarEntryEx>> mCarEntries = new .() ~ DeleteDictionaryAndValues!(_);
 		}
 		
 		struct UserCountKey : IHashable
@@ -1008,6 +1640,40 @@ namespace iStats
 			week = (.)(totalWeekIdx % 13);
 		}
 
+		public static MD5Hash Hash(StringView sv)
+		{
+			return MD5.Hash(.((.)sv.Ptr, sv.Length));
+		}
+
+		void FixFilePath(String pathStr)
+		{
+			pathStr.ToUpper();
+			pathStr.Replace('\\', '/');
+		}
+
+		public bool FileExists(StringView path)
+		{
+			String pathStr = scope String(path);
+			FixFilePath(pathStr);
+
+			String dir = scope .(256);
+			Path.GetDirectoryPath(pathStr, dir);
+			if (mFileFindDirs.TryAdd(dir, var entryPtr))
+			{
+				*entryPtr = new String(dir);
+				for (var entry in Directory.EnumerateFiles(dir))
+				{
+					String dirFilePath = new String(256);
+					entry.GetFilePath(dirFilePath);
+					FixFilePath(dirFilePath);
+					if (!mFileFindFiles.Add(dirFilePath))
+						delete dirFilePath;
+				}
+			}
+
+			return mFileFindFiles.Contains(pathStr);
+		}
+
 		public void WriteCachedText(StringView path, StringView text)
 		{
 			if (mCache.TryAddAlt(path, var keyPtr, var valuePtr))
@@ -1015,7 +1681,7 @@ namespace iStats
 				*keyPtr = new String(path);
 				CacheEntry cacheEntry = new CacheEntry();
 				cacheEntry.mKey = *keyPtr;
-				cacheEntry.mData = new String(text);
+				cacheEntry.SetData(text);
 				*valuePtr = cacheEntry;
 			}
 			else
@@ -1023,14 +1689,14 @@ namespace iStats
 				var cacheEntry = *valuePtr;
 				bool matches;
 				if (cacheEntry.mData != null)
-					matches = cacheEntry.mData == text;
+					matches = cacheEntry.mHash == Hash(text);
 				else
 					matches = cacheEntry.Get(.. scope .()) == text;
-				if ((matches) && (File.Exists(path)))
+				if ((matches) && (FileExists(path)))
 					return;
 				if (cacheEntry.mData == null)
 					cacheEntry.MakeEmpty();
-				cacheEntry.mData.Set(text);
+				cacheEntry.SetData(text, false);
 				cacheEntry.mDirty = true;
 			}
 
@@ -1187,7 +1853,7 @@ namespace iStats
 
 				if (series.mID != null)
 				{
-					if (File.Exists(scope $"html/images/{series.mID}.jpg"))
+					if (FileExists(scope $"html/images/{series.mID}.jpg"))
 						outStr.AppendF($"<img src=images/{series.mID}.jpg /><br>");
 				}
 
@@ -1232,9 +1898,10 @@ namespace iStats
 						int curIRDivIdx = 1;
 
 						String weekInfoFilePath = scope $"{series.SafeName}_{racingWeek.mSeasonYear}_S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}.html";
-						String weekOutStr = scope .();
+						String weekOutStr = scope .(128 * 1024);
 						weekOutStr.AppendF(
 							$"""
+							<!-- SeriesId:{series.mID} SeasonId:{racingWeek.mSeasonId} -->
 							{cHtmlHeader}
 							<script>
 							function AddTime(timeStr)
@@ -1273,16 +1940,19 @@ namespace iStats
 							gIR = parseInt(GetCookie("ir")) + 0;
 							if (gIR == 0)
 								gIR = 2000;
-							gAvgTimes = [];
+							gQualiTimes = [];
 							gFastTimes = [];
+							gAvgTimes = [];
 							gCarClasses = [];
-							gCarClasses["ALL"] = "ALL";
 							</script>
 							<body style=\"font-family: sans-serif\">
 							""");
 
 						AddKindNav(weekOutStr, racingWeek.TotalWeekIdx);
 						weekOutStr.AppendF($"<a href=\"{series.SafeName}.html\">{series.mName}</a> {racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1} {displayTrackName}<br><br>\n");
+
+						int conditionsInsertPos = weekOutStr.Length;
+						List<CarEntryEx> typicalCarEntries = scope .();
 
 						weekOutStr.AppendF(
 							$"""
@@ -1319,6 +1989,8 @@ namespace iStats
 
 							function GetExpectedTime(expectedTimes, ir)
 							{{
+								if ((expectedTimes == undefined) || (expectedTimes.length == 0))
+									return 0;
 								var cExpectInterval = 200;
 								var leftTime = expectedTimes[Math.trunc(ir / cExpectInterval)];
 								var rightTime = expectedTimes[Math.min(Math.trunc(ir / cExpectInterval) + 1, expectedTimes.length - 1)];
@@ -1339,36 +2011,60 @@ namespace iStats
 									FixIR(elem, gIR);
 								}}
 
-								var bestAvgTime = [];
+								var bestQualiTime = [];
 								var bestFastTime = [];
+								var bestAvgTime = [];
 
 								for (var carName in gAvgTimes)
 								{{
 									var carClass = gCarClasses[carName];
-									var avgTime = GetExpectedTime(gAvgTimes[carName], gIR);
-									if ((bestAvgTime[carClass] == undefined) || (avgTime < bestAvgTime[carClass]))
-										bestAvgTime[carClass] = avgTime;
+
+									var qualiTime = GetExpectedTime(gQualiTimes[carName], gIR);
+									if ((bestQualiTime[carClass] == undefined) || (qualiTime < bestQualiTime[carClass]))
+										bestQualiTime[carClass] = qualiTime;
+
 									var fastTime = GetExpectedTime(gFastTimes[carName], gIR);
 									if ((bestFastTime[carClass] == undefined) || (fastTime < bestFastTime[carClass]))
 										bestFastTime[carClass] = fastTime;
+
+									var avgTime = GetExpectedTime(gAvgTimes[carName], gIR);
+									if ((bestAvgTime[carClass] == undefined) || (avgTime < bestAvgTime[carClass]))
+										bestAvgTime[carClass] = avgTime;
 								}}
 
 								for (var carName in gAvgTimes)
 								{{
 									var carClass = gCarClasses[carName];
-									var avgTime = GetExpectedTime(gAvgTimes[carName], gIR);
-									var element = document.getElementById("AVGLAP:" + carName);
-									var html = TimeToStr(avgTime);
-									if (carName != "ALL")
-										html += " (+" + TimeToStr(avgTime - bestAvgTime[carClass]) + ")";
-									element.innerHTML = html;
+
+									var qualiTime = GetExpectedTime(gQualiTimes[carName], gIR);
+									var element = document.getElementById("QUALILAP:" + carName);
+									if ((qualiTime > 0) && (element != undefined))
+									{{
+										html = TimeToStr(qualiTime, gIR);
+										if (carClass != undefined)
+											html += " (+" + TimeToStr(qualiTime - bestQualiTime[carClass]) + ")";
+										element.innerHTML = html;
+									}}
 
 									var fastTime = GetExpectedTime(gFastTimes[carName], gIR);
 									var element = document.getElementById("FASTLAP:" + carName);
-									html = TimeToStr(GetExpectedTime(gFastTimes[carName], gIR));
-									if (carName != "ALL")
-										html += " (+" + TimeToStr(fastTime - bestFastTime[carClass]) + ")";
-									element.innerHTML = html;
+									if ((fastTime > 0) && (element != undefined))
+									{{
+										html = TimeToStr(fastTime, gIR);
+										if (carClass != undefined)
+											html += " (+" + TimeToStr(fastTime - bestFastTime[carClass]) + ")";
+										element.innerHTML = html;
+									}}		
+
+									var avgTime = GetExpectedTime(gAvgTimes[carName], gIR);
+									var element = document.getElementById("AVGLAP:" + carName);
+									if ((avgTime > 0) && (element != undefined))
+									{{
+										html = TimeToStr(avgTime, gIR);
+										if (carClass != undefined)
+											html += " (+" + TimeToStr(avgTime - bestAvgTime[carClass]) + ")";
+										element.innerHTML = html;
+									}}		
 								}}
 							}}
 
@@ -1496,9 +2192,16 @@ namespace iStats
 									{
 										if (carClassWeekInfo.mCarEntries.TryAdd(carCountKV.key, var keyPtr, var valuePtr))
 										{
-											*valuePtr = new List<CarEntry>();
+											*valuePtr = new List<CarEntryEx>();
 										}
-										(*valuePtr).AddRange(carCountKV.value);
+
+										for (var carEntry in carCountKV.value)
+										{
+											CarEntryEx carEntryEx;
+											carEntryEx.mCarEntry = carEntry;
+											carEntryEx.mRacingSubsession = subSession;
+											(*valuePtr).Add(carEntryEx);
+										}
 									}
 								}
 							}
@@ -1579,7 +2282,7 @@ namespace iStats
 							int minutes = (int)(goodLapTime / 60);
 							float seconds = goodLapTime - minutes*60;
 
-							String cmpString = scope .();
+							String cmpString = scope .(256);
 							cmpString.AppendF($"+{goodLapTime - bestTime:0.000}");
 							outStr.AppendF($"{minutes}:{seconds:00.000}");
 							if ((extraInfo) && (goodLapTime >= bestTime))
@@ -1594,22 +2297,25 @@ namespace iStats
 								weekOutStr.AppendF("<br>\n");
 							var carClassWeekInfo = carClassWeekInfos[carClassName];
 
-							for (var carEntries in carClassWeekInfo.mCarEntries)
+							/*for (var carEntries in carClassWeekInfo.mCarEntries)
 							{
 								String str = scope .();
-								for (var carEntry in carEntries.value)
+								for (var carEntryEx in carEntries.value)
 								{
+									var carEntry = carEntryEx.mCarEntry;
 									if ((carEntry.mIR != 0) && (carEntry.mFastestLapTime != 0))
 										str.AppendF($"{carEntry.mIR}, {carEntry.mFastestLapTime}\n");
 								}
 								var filePath = scope $"c:\\temp\\csv\\test{csvIdx++}.txt";
 								File.WriteAllText(filePath, str);
 								weekOutStr.AppendF($"<!-- {carEntries.key} {filePath} -->\n");
-							}
+							}*/
+
+							bool hasQualiTimes = false;
 
 							// Expected times
 							{
-								void TimesOut(StringView varName, StringView name, ExpectedTimes expectedTimes)
+								void TimesOut(StringView varName, StringView name, ExpectedTimes<CarEntryEx> expectedTimes)
 								{
 									weekOutStr.AppendF($"{varName}[\"{name}\"] = [");
 									for (var time in expectedTimes.mExpectedTimes)
@@ -1621,46 +2327,69 @@ namespace iStats
 									weekOutStr.AppendF("];\n");
 								}
 
-								ExpectedTimes totalAvgExpectedTimes = scope .();
-								ExpectedTimes totalFastExpectedTimes = scope .();
+								ExpectedTimes<CarEntryEx> totalQualiExpectedTimes = scope .();
+								ExpectedTimes<CarEntryEx> totalFastExpectedTimes = scope .();
+								ExpectedTimes<CarEntryEx> totalAvgExpectedTimes = scope .();
 								weekOutStr.Append("<script>\n");
 								for (var carEntries in carClassWeekInfo.mCarEntries)
 								{
-									ExpectedTimes avgExpectedTimes = scope .();
-									ExpectedTimes fastExpectedTimes = scope .();
-
+									ExpectedTimes<CarEntryEx> qualiExpectedTimes = scope .();
+									ExpectedTimes<CarEntryEx> fastExpectedTimes = scope .();
+									ExpectedTimes<CarEntryEx> avgExpectedTimes = scope .();
+									
 									String str = scope .();
-									for (var carEntry in carEntries.value)
+									for (var carEntryEx in carEntries.value)
 									{
+										var carEntry = carEntryEx.mCarEntry;
+										if ((carEntry.mIR != 0) && (carEntry.mQualiLapTime != 0))
+										{
+											hasQualiTimes = true;
+											qualiExpectedTimes.Add(carEntry.mIR, carEntry.mQualiLapTime, carEntryEx);
+											totalQualiExpectedTimes.Add(carEntry.mIR, carEntry.mQualiLapTime, carEntryEx);
+										}
+
 										if ((carEntry.mIR != 0) && (carEntry.mFastestLapTime != 0))
 										{
-											avgExpectedTimes.Add(carEntry.mIR, carEntry.mAvgLapTime);
-											fastExpectedTimes.Add(carEntry.mIR, carEntry.mFastestLapTime);
-											totalAvgExpectedTimes.Add(carEntry.mIR, carEntry.mAvgLapTime);
-											totalFastExpectedTimes.Add(carEntry.mIR, carEntry.mFastestLapTime);
+											fastExpectedTimes.Add(carEntry.mIR, carEntry.mFastestLapTime, carEntryEx);
+											avgExpectedTimes.Add(carEntry.mIR, carEntry.mAvgLapTime, carEntryEx);
+											totalFastExpectedTimes.Add(carEntry.mIR, carEntry.mFastestLapTime, carEntryEx);
+											totalAvgExpectedTimes.Add(carEntry.mIR, carEntry.mAvgLapTime, carEntryEx);
 										}
+									}
+
+									qualiExpectedTimes.Calc(true);
+									// Add 20% of conditions closest to typical times
+									for (int i < (int)Math.Ceiling(qualiExpectedTimes.mErrorEntries.Count / 5.0f))
+									{
+										typicalCarEntries.Add(qualiExpectedTimes.mErrorEntries[i].mUserData);
 									}
 
 									if (carClassWeekInfo.mCarEntries.Count > 1)
 									{
-										avgExpectedTimes.Calc();
-										fastExpectedTimes.Calc();
-										TimesOut("gAvgTimes", carEntries.key, avgExpectedTimes);
+										fastExpectedTimes.Calc(false);
+										avgExpectedTimes.Calc(false);
+										if (hasQualiTimes)
+											TimesOut("gQualiTimes", carEntries.key, qualiExpectedTimes);
 										TimesOut("gFastTimes", carEntries.key, fastExpectedTimes);
+										TimesOut("gAvgTimes", carEntries.key, avgExpectedTimes);
 										weekOutStr.AppendF($"gCarClasses[\"{carEntries.key}\"] = \"{carClassName}\";\n");
 									}
 								}
-								totalAvgExpectedTimes.Calc();
-								totalFastExpectedTimes.Calc();
-								TimesOut("gAvgTimes", "ALL", totalAvgExpectedTimes);
-								TimesOut("gFastTimes", "ALL", totalFastExpectedTimes);
+								totalQualiExpectedTimes.Calc(false);
+								totalFastExpectedTimes.Calc(false);
+								totalAvgExpectedTimes.Calc(false);
+								if (hasQualiTimes)
+									TimesOut("gQualiTimes", carClassName, totalQualiExpectedTimes);
+								TimesOut("gFastTimes", carClassName, totalFastExpectedTimes);
+								TimesOut("gAvgTimes", carClassName, totalAvgExpectedTimes);
 
 								weekOutStr.Append("</script>\n");
 							}
 
 							weekOutStr.AppendF($"<b>{carClassName}</b><br>\n");
-							weekOutStr.AppendF("<table style=\"border-spacing: 24px 0px;\">\n");
-							List<CarEntry> totalCarEntries = scope .();
+
+							weekOutStr.AppendF("<table style=\"border-spacing: 14px 0px;\">\n");
+							List<CarEntryEx> totalCarEntries = scope .();
 							for (var carCountKV in carClassWeekInfo.mCarEntries)
 							{
 								totalCarEntries.AddRange(carCountKV.value);
@@ -1684,9 +2413,29 @@ namespace iStats
 							weekOutStr.AppendF(
 								$"""
 								<tr><td width=240px></td><td style=\"text-align: right;\">Count</td>
-								<td style=\"text-align: center;\"><div id="ir{curIRDivIdx++}" style="display:inline"></div> Avg Lap</td>
-								<td style=\"text-align: center;\"><div id="ir{curIRDivIdx++}" style="display:inline"></div> Fast Lap</td><tr/>
-								<tr><td>Total Entries</td><td style=\"text-align: right;\">{totalCarEntries.Count}</td><td id="AVGLAP:ALL" style=\"text-align: left;\"></td><td id="FASTLAP:ALL" style=\"text-align: left;\"></td></tr>\n
+								""");
+							if (hasQualiTimes)
+								weekOutStr.AppendF(
+									$"""
+									<td style=\"text-align: center;\"><div id="ir{curIRDivIdx++}" style="display:inline"></div> Quali Lap</td>
+									""");
+							weekOutStr.AppendF(
+								$"""
+								<td style=\"text-align: center;\"><div id="ir{curIRDivIdx++}" style="display:inline"></div> Fast Lap</td>
+								<td style=\"text-align: center;\"><div id="ir{curIRDivIdx++}" style="display:inline"></div> Avg Lap</td><tr/>
+								<tr><td>Total Entries</td><td style=\"text-align: right;\">{totalCarEntries.Count}</td>
+								""");
+
+							if (hasQualiTimes)
+								weekOutStr.AppendF(
+									$"""
+									<td id="QUALILAP:{carClassName}" style=\"text-align: left;\"></td>
+									""");
+							weekOutStr.AppendF(
+								$"""
+								<td id="FASTLAP:{carClassName}" style=\"text-align: left;\"></td>
+								<td id="AVGLAP:{carClassName}" style=\"text-align: left;\"></td>
+								</tr>\n
 								""");
 
 							if (carClassWeekInfo.mCarEntries.Count > 1)
@@ -1702,8 +2451,17 @@ namespace iStats
 									weekOutStr.AppendF(
 										$"""
 										<tr><td nowrap>{carName}</td><td style=\"text-align: right;\">{carEntries.Count}</td>
+										""");
+									if (hasQualiTimes)
+										weekOutStr.AppendF(
+											$"""
+											<td id="QUALILAP:{carName}" style=\"text-align: left;\"></td>
+											""");
+									weekOutStr.AppendF(
+										$"""
+										<td id="FASTLAP:{carName}" style=\"text-align: left;\"></td>
 										<td id="AVGLAP:{carName}" style=\"text-align: left;\"></td>
-										<td id="FASTLAP:{carName}" style=\"text-align: left;\"></td></tr>\n
+										</tr>\n
 										""");
 								}
 							}
@@ -1712,6 +2470,26 @@ namespace iStats
 							weekOutStr.AppendF(carClassWeekInfo.mOut);
 							weekOutStr.AppendF("</table>\n");
 						}
+
+						if (!typicalCarEntries.IsEmpty)
+						{
+							typicalCarEntries.Sort(scope (lhs, rhs) => lhs.mRacingSubsession.mTempValue <=> rhs.mRacingSubsession.mTempValue);
+
+							RacingSubSession typicalSubsession = typicalCarEntries[typicalCarEntries.Count / 2].mRacingSubsession;
+
+							const String[4] skyNames = .("Clear", "Partly Cloudy", "Mostly Cloudy", "Overcast");
+							const String[4] dirNames = .("N", "NE", "E", "SE");
+							weekOutStr.Insert(conditionsInsertPos, scope
+								$"""
+								<br>
+								<b>Typical Conditions</b><br>
+								{typicalSubsession.mTempValue:0.0}°F, Wind {dirNames[Math.Min(typicalSubsession.mWindDir, 3)]} @
+								{typicalSubsession.mWindValue:0.0 MPH}<br>
+								Atmosphere: {typicalSubsession.mWeatherRH} RH<br>
+								Skies: {skyNames[Math.Min(typicalSubsession.mWeatherSkies, 3)]}<br><br>
+								""");
+						}
+
 						weekOutStr.Append("<script>IRChanged();</script>\n");
 						weekOutStr.Append(cHtmlFooter);
 
@@ -1849,7 +2627,7 @@ namespace iStats
 
 						if (series.mID != null)
 						{
-							if (File.Exists(scope $"html/images/icon/{series.mID}.jpg"))
+							if (FileExists(scope $"html/images/icon/{series.mID}.jpg"))
 								kindOutStr.AppendF($"<img src=images/icon/{series.mID}.jpg />");
 						}
 
@@ -2062,6 +2840,44 @@ namespace iStats
 
 		public static int Main(String[] args)
 		{
+			/*{
+				String str = scope .();
+				File.ReadAllText("c:\\temp\\subsession.json", str);
+
+				/*List<int> iList = scope .();
+				for (int i < 100000)
+					iList.Add(i);*/
+
+				List<uint8> compData = scope .();
+
+				Stopwatch sw = scope .();
+				sw.Start();
+				Compression.Compress(.((.)str.Ptr, str.Length), compData);
+				sw.Stop();
+				Debug.WriteLine("Time: {}", sw.ElapsedMilliseconds);
+
+				List<uint8> decompData = scope .();
+				sw = scope .();
+				sw.Start();
+				Compression.Decompress(.((.)compData.Ptr, compData.Count), decompData);
+				sw.Stop();
+				Debug.WriteLine("Time: {}", sw.ElapsedMilliseconds);
+
+				StringView sv = .((.)decompData.Ptr, decompData.Count);
+				Test.Assert(sv == str);
+			}*/
+
+			/*int outLen = 0;
+			void* outData = MiniZ.MiniZ.[Friend]tdefl_compress_mem_to_heap(iList.Ptr, iList.Count * sizeof(int), &outLen, .TDEFL_DEFAULT_MAX_PROBES);
+
+			int decompOutLen = 0;
+			void* decompData = MiniZ.MiniZ.[Friend]tinfl_decompress_mem_to_heap(outData, outLen, &decompOutLen, default);
+
+			MiniZ.MiniZ.[Friend]def_free_func(null, outData);*/
+
+
+			///
+
 			Stopwatch sw = scope .();
 			sw.Start();
 
@@ -2076,6 +2892,8 @@ namespace iStats
 					pg.mCacheMode = .AlwaysUseCache;
 				if (arg == "-fast")
 					pg.mLowestSeasonId = 3280; //2827
+				if (arg == "-veryfast")
+					pg.mLowestSeasonId = 3361; //2827
 			}
 
 			Console.WriteLine($"Starting. CacheMode: {pg.mCacheMode}");
@@ -2107,12 +2925,20 @@ namespace iStats
 
 			sw.Stop();
 			
-			Console.WriteLine($"Total time: {sw.Elapsed}");
+			Console.WriteLine($"Total time    : {sw.Elapsed}");
+			Console.WriteLine($"Transfer time : {gApp.mTransferSW.Elapsed}");
+			Console.WriteLine($"Data time     : {gApp.mDataSW.Elapsed}");
+
 			Console.WriteLine($"{pg.mStatsGetCount} gets, {pg.mStatsTransferCount} not from cache.");
 
-			ExpectedTimes.Finish();
+			//ExpectedTimes.Finish();
 
 			return 0;
 		}
+	}
+
+	static
+	{
+		public static Program gApp;
 	}
 }

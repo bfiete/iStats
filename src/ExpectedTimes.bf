@@ -23,12 +23,19 @@ namespace iStats
 		}
 	}
 
-	class ExpectedTimes
+	class ExpectedTimes<T>
 	{
 		public struct Entry
 		{
 			public int32 mIR;
 			public float mTime;
+			public T mUserData;
+		}
+
+		public struct ErrorEntry
+		{
+			public float mError;
+			public T mUserData;
 		}
 
 		/*public static float[51] cBasisPercentages = .(
@@ -52,6 +59,7 @@ namespace iStats
 		public const int32 cBasisIR = 2000;
 		public List<Entry> mEntries = new .() ~ delete _;
 		public List<float> mExpectedTimes = new .() ~ delete _;
+		public List<ErrorEntry> mErrorEntries = new .() ~ delete _;
 		public float mBasisTime;
 
 		public float mMinTime;
@@ -76,11 +84,12 @@ namespace iStats
 			}
 		}
 
-		public void Add(int32 ir, float time)
+		public void Add(int32 ir, float time, T userData)
 		{
 			Entry entry;
 			entry.mIR = ir;
 			entry.mTime = time;
+			entry.mUserData = userData;
 			mEntries.Add(entry);
 
 			if (mMaxTime == 0)
@@ -95,7 +104,7 @@ namespace iStats
 			}
 		}
 
-		public void Calc()
+		public void Calc(bool generateErrorEntries)
 		{
 			if (mEntries.Count == 0)
 				return;
@@ -213,10 +222,28 @@ namespace iStats
 
 			mMinTime = Math.Min(mMinTime, mBasisTime * cBasisPercentages[50]);
 			mMaxTime = Math.Max(mMaxTime, mBasisTime * cBasisPercentages[0]);
+
+			if (generateErrorEntries)
+			{
+				for (var entry in mEntries)
+				{
+					float expectedTime = GetExpectedTime(entry.mIR);
+					float timeDiff = Math.Abs(expectedTime - entry.mTime);
+					float pctDiff = timeDiff / expectedTime;
+
+					ErrorEntry errorEntry;
+					errorEntry.mError = pctDiff;
+					errorEntry.mUserData = entry.mUserData;
+					mErrorEntries.Add(errorEntry);
+				}
+				mErrorEntries.Sort(scope (lhs, rhs) => lhs.mError <=> rhs.mError);
+			}
 		}
 
 		public float GetExpectedTime(int ir)
 		{
+			if (ir >= 10000)
+				return mExpectedTimes.Back;
 			float leftTime = mExpectedTimes[(ir / cExpectInterval)];
 			float rightTime = mExpectedTimes[Math.Min((ir / cExpectInterval) + 1, mExpectedTimes.Count - 1)];
 			return Math.Lerp(leftTime, rightTime, (ir % cExpectInterval) / (float)cExpectInterval);
