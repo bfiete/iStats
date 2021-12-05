@@ -8,6 +8,7 @@ using System.Collections;
 using System.Text;
 using System.Security.Cryptography;
 using utils;
+using System.Threading;
 
 namespace iStats
 {
@@ -166,6 +167,101 @@ namespace iStats
 		}
 	}
 
+	class LimitedFileStream
+	{
+		public static DLIList<LimitedFileStream> sOpenStreams = new .() ~ delete _;
+		public static int32 sNumOpenStreams;
+		public static Monitor sMonitor = new .() ~ delete _;
+
+		public LimitedFileStream mPrev;
+		public LimitedFileStream mNext;
+
+		public FileStream mStream ~ delete _;
+		public int32 mLastUseIdx;
+		public String mPath ~ delete _;
+		public FileAccess mFileAccess;
+
+		public ~this()
+		{
+			if (mStream != null)
+			{
+				using (sMonitor.Enter())
+				{
+					sOpenStreams.Remove(this);
+					sNumOpenStreams--;
+				}
+			}
+		}
+
+		public FileStream FileStream
+		{
+			get
+			{
+				// If this stream isn't already at the back then move it to the back
+				if (mNext != null)
+				{
+					using (sMonitor.Enter())
+					{
+						sOpenStreams.Remove(this);
+						sOpenStreams.PushBack(this);
+					}
+				}
+
+				if (mStream == null)
+					MakeActive();
+				return mStream;
+			}
+		}
+
+		Result<void, FileOpenError> MakeActive()
+		{
+			if (mStream == null)
+			{
+				mStream = new FileStream();
+				switch (mStream.Open(mPath, mFileAccess))
+				{
+				case .Ok(let val):
+				case .Err(let err):
+					DeleteAndNullify!(mStream);
+					return .Err(err);
+				}
+			}
+
+			Debug.Assert(mPrev == null);
+			Debug.Assert(mNext == null);
+
+			using (sMonitor.Enter())
+			{
+				sOpenStreams.PushBack(this);
+				if (++sNumOpenStreams > 512)
+				{
+					var lru = sOpenStreams.PopFront();
+					DeleteAndNullify!(lru.mStream);
+					sNumOpenStreams--;
+				}
+			}
+
+			return .Ok;
+		}
+
+		/*public Result<void, FileOpenError> Create(StringView path, FileAccess access = .ReadWrite)
+		{
+			mPath = new String(path);
+			mFileAccess = access;
+
+			mStream = new FileStream();
+			Try!(mStream.Open(path, FileMode.Create, access));
+			return MakeActive();
+		}*/
+
+		public Result<void, FileOpenError> Open(StringView path, FileAccess access = .ReadWrite)
+		{
+			mPath = new String(path);
+			mFileAccess = access;
+			return MakeActive();
+		}
+	}
+
 	class CacheEntry
 	{
 		public String mKey;
@@ -175,7 +271,7 @@ namespace iStats
 		public int32 mDBBucketIdx = -1;
 		public bool mDirty;
 		public bool mNeedsDataRewrite;
-		public Stream mDBStream;
+		public LimitedFileStream mDBStream;
 		public int64 mDBStreamPos;
 		
 		public void Get(String data)
@@ -189,13 +285,14 @@ namespace iStats
 				return;
 			}
 
-			mDBStream.Position = mDBStreamPos;
+			var fs = mDBStream.FileStream;
+			fs.Position = mDBStreamPos;
 			if (mCompressKind != .None)
 			{
-				int32 len = mDBStream.Read<int32>();
+				int32 len = fs.Read<int32>();
 				List<uint8> compData = scope .();
 				compData.GrowUnitialized(len);
-				mDBStream.TryRead(compData);
+				fs.TryRead(compData);
 				mCompressKind.Decompress(compData, data);
 
 				// Setting to raw data
@@ -207,7 +304,7 @@ namespace iStats
 			}
 			else
 			{
-				mDBStream.ReadStrSized32(data);
+				fs.ReadStrSized32(data);
 			}
 		}
 
@@ -277,7 +374,7 @@ namespace iStats
 		Dictionary<int, CarInfo> mCarInfo = new .() ~ DeleteDictionaryAndValues!(_);
 		int32 mCurDBBucketIdx;
 		int32 mCurDBBucketCount;
-		List<Stream> mDBStreams = new .() ~ DeleteContainerAndItems!(_);
+		List<LimitedFileStream> mDBStreams = new .() ~ DeleteContainerAndItems!(_);
 
 		CacheMode mCacheMode = .RefreshCurrentSeason;//.RefreshCurrentSeason;//.AlwaysUseCache;
 		String mUserName = new .() ~ delete _;
@@ -286,6 +383,7 @@ namespace iStats
 		CURL.Easy mCurl = new .() ~ delete _;
 		bool mLoggedIn = false;
 
+		int mWriteCacheTextWriteCount = 0;
 		int mStatsGetCount = 0;
 		int mStatsTransferCount = 0;
 		int mLowestSeasonId = 2626; // From Jan 2020
@@ -363,15 +461,17 @@ namespace iStats
 				if (!cacheBucket.mDirty)
 					continue;
 
-				Stream streamToClose = null;
+				LimitedFileStream streamToClose = null;
 				for (var cacheEntry in cacheBucket.mEntries)
 				{
 					if (cacheEntry.mData == null)
 					{
+						var fs = cacheEntry.mDBStream.FileStream;
+
 						cacheEntry.mData = new .();
-						cacheEntry.mDBStream.Position = cacheEntry.mDBStreamPos;
-						cacheEntry.mData.GrowUnitialized((int32)cacheEntry.mDBStream.Read<int32>());
-						cacheEntry.mDBStream.TryRead(cacheEntry.mData);
+						fs.Position = cacheEntry.mDBStreamPos;
+						cacheEntry.mData.GrowUnitialized((int32)fs.Read<int32>());
+						fs.TryRead(cacheEntry.mData);
 						if (cacheEntry.mNeedsDataRewrite)
 						{
 							String data = scope .();
@@ -439,7 +539,7 @@ namespace iStats
 
 		void TestSanity(StringView areaName)
 		{
-			HashSet<Stream> set = scope .();
+			HashSet<LimitedFileStream> set = scope .();
 			for (var entry in mDBStreams)
 			{
 				if (!set.Add(entry))
@@ -491,14 +591,21 @@ namespace iStats
 
 			for (int32 bucketIdx = 0; true; bucketIdx++)
 			{
-				FileStream fs = new .();
-				if (fs.Open(scope $"db/db{bucketIdx:000000}.dat") case .Err)
+				LimitedFileStream lfs = new .();
+				var dbFileName = scope $"db/db{bucketIdx:000000}.dat";
+				if (lfs.Open(dbFileName) case .Err(var err))
 				{
-					delete fs;
+					if (err != .NotFound)
+					{
+						Runtime.FatalError(scope $"Unable to open {dbFileName}");
+					}
+
+					delete lfs;
 					break;
 				}
+				var fs = lfs.FileStream;
 
-				mDBStreams.Add(fs);
+				mDBStreams.Add(lfs);
 
 				int32 version = 0;
 
@@ -542,7 +649,7 @@ namespace iStats
 
 					//if (useStreamPtr)
 					{
-						cacheEntry.mDBStream = fs;
+						cacheEntry.mDBStream = lfs;
 						if (version == 1)
 							cacheEntry.mCompressKind = .Deflate;
 						else if (version >= 2)
@@ -777,15 +884,17 @@ namespace iStats
 		{
 			int quoteStart = -1;
 			char8 prevC = 0;
-			for (var c in str.RawChars)
+			char8* ptr = str.Ptr;
+			for (int i < str.[Friend]mLength)
 			{
+				char8 c = ptr[i];
 				if (c == '"')
 				{
 					if (quoteStart == -1)
-						quoteStart = @c.Index;
+						quoteStart = i;
 					else
 					{
-						outStrings.Add(str.Substring(quoteStart + 1, @c.Index - quoteStart - 1));
+						outStrings.Add(str.Substring(quoteStart + 1, i - quoteStart - 1));
 						quoteStart = -1;
 					}
 				}
@@ -1200,7 +1309,7 @@ namespace iStats
 												}
 												else
 													racingSession = *sessionPtr;
-												
+
 												racingSubSession.mId = subSessionId;
 												racingSession.mSubSessions.Add(racingSubSession);
 											}
@@ -1457,7 +1566,14 @@ namespace iStats
 								{
 									int eqPos = line.IndexOf('=', 1);
 									if (eqPos == -1)
+									{
+										if (line == ":skip")
+										{
+											Console.Write(" Skipping series");
+											break RaceLoop;
+										}
 										continue;
+									}
 									
 									StringView key = line.Substring(1, eqPos - 1);
 									StringView value = line.Substring(eqPos + 1);
@@ -1674,7 +1790,7 @@ namespace iStats
 			return mFileFindFiles.Contains(pathStr);
 		}
 
-		public void WriteCachedText(StringView path, StringView text)
+		public void WriteCachedText(StringView path, StringView text, bool addTimeHeader = false)
 		{
 			if (mCache.TryAddAlt(path, var keyPtr, var valuePtr))
 			{
@@ -1700,8 +1816,20 @@ namespace iStats
 				cacheEntry.mDirty = true;
 			}
 
-			File.WriteAllText(path, text);
+			var writeText = text;
+			if (addTimeHeader)
+			{
+				var str = scope:: String();
+				str.Reserve(text.Length + 256);
+				str.AppendF($"<!-- Written {DateTime.UtcNow} UTC -->\n");
+				str.Append(text);
+				writeText = str;
+			}
+
+			mWriteCacheTextWriteCount++;
+			File.WriteAllText(path, writeText);
 		}
+
 		String cHtmlHeader =
 			"""
 			<html lang="en">
@@ -1744,7 +1872,7 @@ namespace iStats
 			<br><a href=about.html>About</a>
 			</body></html>
 			""";
-
+		
 
 		public void Analyze()
 		{
@@ -1819,7 +1947,7 @@ namespace iStats
 				{
 					if (series.mCurrentSeasonId != 0)
 					{
-						Console.WriteLine($"WARNING: Uncategorized current series: {series.mName}");
+						Console.WriteLine($"{series.mName} [WARNING] Uncategorized");
 					}
 
 					continue;
@@ -1827,6 +1955,8 @@ namespace iStats
 
 				if (series.mWeeks.IsEmpty)
 					continue;
+
+				int prevFilesWritten = mWriteCacheTextWriteCount;
 
 				String outStr = scope .();
 				String carCSV = scope .();
@@ -1838,7 +1968,7 @@ namespace iStats
 				//var localDateTime = lastWeek.mRacingDays.Back;
 				//Console.WriteLine("DateTimeOffset (other format) = {0:dd} {0:MMMM} {0:yyyy}, {0:hh}:{0:mm}:{0:ss} {0:tt} ", dt);
 
-				Console.WriteLine($"{series.mName:60} {lastWeek.mSeasonYear} S{lastWeek.mSeasonNum+1}W{lastWeek.mWeekNum+1}");
+				Console.Write($"{series.mName:60} {lastWeek.mSeasonYear} S{lastWeek.mSeasonNum+1}W{lastWeek.mWeekNum+1}");
 				outStr.AppendF($"{cHtmlHeader}<body style=\"font-family: sans-serif\">");
 				AddKindNav(outStr, lastWeek.TotalWeekIdx);
 
@@ -2160,6 +2290,7 @@ namespace iStats
 
 										AddCarClassStr(carClassKV.key, scope
 											$"""
+
 											<tr><td id=\"time{timeIdx++}\" nowrap><script>AddTime(\"{utcTime:yyyy}-{utcTime:MM}-{utcTime:dd}T{utcTime:HH}:{utcTime:mm}Z\");</script></td>
 											<td style=\"text-align: right;\">{carCount}</td>
 											""");
@@ -2493,7 +2624,7 @@ namespace iStats
 						weekOutStr.Append("<script>IRChanged();</script>\n");
 						weekOutStr.Append(cHtmlFooter);
 
-						WriteCachedText(scope $"html/{weekInfoFilePath}", weekOutStr);
+						WriteCachedText(scope $"html/{weekInfoFilePath}", weekOutStr, true);
 
 						if (pass == 0)
 							carCSV.AppendF($"{weekIdx},{racingWeek.mFieldPeak:0.0},{racingWeek.mSeasonYear} S{racingWeek.mSeasonNum+1}W{racingWeek.mWeekNum+1}\\n{displayTrackName}\n");
@@ -2517,7 +2648,7 @@ namespace iStats
 
 				outStr.AppendF("</table>\n");
 				outStr.AppendF(cHtmlFooter);
-				WriteCachedText(scope $"html/{series.SafeName}.html", outStr);
+				WriteCachedText(scope $"html/{series.SafeName}.html", outStr, true);
 				//File.WriteAllText(scope $"html/{series.mName}.csv", carCSV);
 
 				/*if (series.mName.Contains("VRS"))
@@ -2544,6 +2675,10 @@ namespace iStats
 						continue;
 					process.WaitFor();
 				}*/
+
+				if (mWriteCacheTextWriteCount != prevFilesWritten)
+					Console.Write($" : {mWriteCacheTextWriteCount - prevFilesWritten} file writes");
+				Console.WriteLine();
 			}
 
 			// Generate per-kind per-week html
@@ -2652,7 +2787,7 @@ namespace iStats
 						""");
 
 					String outPath = scope $"html/{seriesHtmlNames[(.)seriesKind]}.html";
-					WriteCachedText(outPath, kindOutStr);
+					WriteCachedText(outPath, kindOutStr, true);
 				}
 
 				String kindOutStr = scope .();
@@ -2687,7 +2822,7 @@ namespace iStats
 
 				kindOutStr.AppendF("</table>\n");
 				kindOutStr.AppendF(cHtmlFooter);
-				WriteCachedText(scope $"html/{seriesKind}History.html", kindOutStr);
+				WriteCachedText(scope $"html/{seriesKind}History.html", kindOutStr, true);
 			}
 
 			Console.WriteLine();
