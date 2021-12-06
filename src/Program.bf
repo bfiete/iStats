@@ -1777,7 +1777,9 @@ namespace iStats
 			if (mFileFindDirs.TryAdd(dir, var entryPtr))
 			{
 				*entryPtr = new String(dir);
-				for (var entry in Directory.EnumerateFiles(dir))
+				String origDir = scope .();
+				Path.GetDirectoryPath(path, origDir);
+				for (var entry in Directory.EnumerateFiles(origDir))
 				{
 					String dirFilePath = new String(256);
 					entry.GetFilePath(dirFilePath);
