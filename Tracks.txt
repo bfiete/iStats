@@ -310,3 +310,17 @@
 99 Barber Motorsports Park - Short A
 413 Hungaroring
 414 Hickory Motor Speedway
+423 Knockhill Racing Circuit - International
+424 Knockhill Racing Circuit - International Reverse
+425 Knockhill Racing Circuit - National
+426 Knockhill Racing Circuit - National Reverse
+427 Knockhill Racing Circuit - Rallycross
+428 Hockenheimring Baden-Württemberg - Porsche Experience Center - East
+429 Hockenheimring Baden-Württemberg - Porsche Experience Center - Outer
+430 Hockenheimring Baden-Württemberg - Porsche Experience Center - West
+431 Hockenheimring Baden-Württemberg - Porsche Experience Center - Handling
+432 Watkins Glen International - Classic
+433 Watkins Glen International - Cup
+434 Watkins Glen International - Boot
+435 Watkins Glen International - Classic Boot
+436 Knockhill Racing Circuit - Tri-Oval
