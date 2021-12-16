@@ -347,10 +347,10 @@
 3395W3 Sprint Car Cup : Oval
 	LICENSE B
 	ID 131
-3352W3 Street Stock Fanatec Series - R : Road
+3352W3 Street Stock Fanatec Series - R : Oval
 	LICENSE R
 	ID 182
-3375W3 Street Stock Series - C : Road
+3375W3 Street Stock Series - C : Oval
 	LICENSE C
 	ID 190
 0 Stress Test Event
