@@ -410,7 +410,7 @@
 0 VRS GT Sprint Series : GT Sprint VRS Series
 0 Winter Derby
 0 Winter Derby - Fixed
-3561W3 Winter iRacing NASCAR Series : Oval
+3561W3 Winter iRacing NASCAR Series
 	LICENSE C
 	ID 482
 0 Winter iRacing NASCAR Series - Fixed
