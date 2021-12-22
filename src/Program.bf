@@ -537,7 +537,7 @@ namespace iStats
 			sd.Get("Password", mPassword);
 		}
 
-		void TestSanity(StringView areaName)
+		void TestSanityDB(StringView areaName)
 		{
 			HashSet<LimitedFileStream> set = scope .();
 			for (var entry in mDBStreams)
@@ -545,6 +545,13 @@ namespace iStats
 				if (!set.Add(entry))
 					Runtime.FatalError(scope $"TestSanity failed at {areaName} on {entry}");
 			}
+		}
+
+		void TestSanitySeries()
+		{
+			/*HashSet<String> names = scope .();
+			for (var key in mSeriesDict.Keys)
+				Test.Assert(names.Add(key));*/
 		}
 
 		struct DBStatEntry
@@ -700,7 +707,7 @@ namespace iStats
 
 			Console.WriteLine($". {truncEntries} truncated entries.");
 
-			TestSanity("ReadCache");
+			TestSanityDB("ReadCache");
 		}
 
 		void MakeUTF8(String str)
@@ -1136,6 +1143,24 @@ namespace iStats
 
 						Get(subsessionDataName, subsessionData).IgnoreError();
 
+						CheckContent: do
+						{
+							if (subsessionData.StartsWith(":skip"))
+								break CheckContent;
+							for (var line in subsessionData.Split('\n', .RemoveEmptyEntries))
+							{
+								if (!line.StartsWith(':'))
+									break CheckContent;
+							}
+							// Error- no racer data, regenerate
+							subsessionData.Clear();
+						}
+
+						if (seasonId == 3543)
+						{
+							NOP!();
+						}	
+
 						if ((newWay) && (subsessionData.IsEmpty))
 						{
 							String subsessionResults = scope .();
@@ -1236,6 +1261,7 @@ namespace iStats
 												StringView useSeriesName = seriesName;
 												while (true)
 												{
+													useSeriesName.Trim();
 													if (mSeriesDict.TryAddAlt(useSeriesName, var namePtr, var seriesPtr))
 													{
 														series = *seriesPtr = new .();
@@ -1246,6 +1272,7 @@ namespace iStats
 													{
 														series = *seriesPtr;
 													}
+													TestSanitySeries();
 
 													if (series.mRemapName == null)
 														break;
@@ -1395,7 +1422,7 @@ namespace iStats
 												}
 											}
 										}
-										else if (sessionKind == "RACE")
+										else if ((sessionKind == "RACE") || (sessionKind == "FEATURE"))
 										{
 											if (oldIRating > 100)
 											{
@@ -1480,6 +1507,7 @@ namespace iStats
 								StringView useSeriesName = seriesName;
 								while (true)
 								{
+									useSeriesName.Trim();
 									if (mSeriesDict.TryAddAlt(useSeriesName, var namePtr, var seriesPtr))
 									{
 										series = *seriesPtr = new .();
@@ -1490,6 +1518,7 @@ namespace iStats
 									{
 										series = *seriesPtr;
 									}
+									TestSanitySeries();
 
 									if (series.mRemapName == null)
 										break;
@@ -2939,11 +2968,14 @@ namespace iStats
 				}
 				else
 					racingSeries = *valuePtr;
+				TestSanitySeries();
 			}
 		}
 
 		void WriteSeries()
 		{
+			TestSanitySeries();
+
 			if (mSeriesDict.Count < 5)
 				return; // Incomplete
 
@@ -2955,6 +2987,13 @@ namespace iStats
 
 			for (var seriesName in seriesNames)
 			{
+				if (seriesName.IsEmpty)
+					continue;
+				if (seriesName.Contains('\0'))
+					continue;
+				if (seriesName.Contains('"'))
+					continue;
+
 				mSeriesDict.TryGetAlt(seriesName, var seriesNameStr, var racingSeries);
 				data.AppendF($"{racingSeries.mCurrentSeasonId}");
 				if (racingSeries.mCurrentSeasonWeek >= 0)
