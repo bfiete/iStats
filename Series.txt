@@ -78,10 +78,10 @@
 3537W2 DIRTcar Limited Late Model Series : DirtOval
 	LICENSE D
 	ID 291
-3544W2 DIRTcar Pro Late Model Next Level Racing Series
-0 DIRTcar Pro Late Model Series : DirtOval
+3544W2 DIRTcar Pro Late Model Next Level Racing Series : DirtOval
 	LICENSE C
 	ID 306
+0 DIRTcar Pro Late Model Series : DIRTcar Pro Late Model Next Level Racing Series
 3534W2 DIRTcar Street Stock Buttkicker Series - Fixed : DirtOval
 	LICENSE R
 	ID 446
