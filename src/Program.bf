@@ -1922,12 +1922,28 @@ namespace iStats
 
 			Dictionary<UserCountKey, int> seasonUserCountDict = scope .();
 
+			List<int> weekIndices = scope .();
 			int highestTotalWeekIdx = 0;
 			int lowestTotalWeekIdx = int.MaxValue;
 
 			List<String> seriesNames = scope .();
 			seriesNames.AddRange(mSeriesDict.Keys);
 			seriesNames.Sort(scope (lhs, rhs) => lhs.CompareTo(rhs, true));
+
+			for (var series in mSeriesDict.Values)
+			{
+				if (series.mKind == .Unknown)
+					continue;
+				for (var racingWeek in series.mWeeks)
+					weekIndices.Add(racingWeek.TotalWeekIdx);
+			}
+
+			weekIndices.Sort();
+			if (!weekIndices.IsEmpty)
+			{
+				highestTotalWeekIdx = weekIndices[Math.Max(0, weekIndices.Count - 12)];
+				lowestTotalWeekIdx = weekIndices[Math.Min(12, weekIndices.Count - 1)];
+			}
 
 			void AddKindNav(String outStr, int32 totalWeekIdx, SeriesKind seriesKind = .Unknown)
 			{
@@ -2670,9 +2686,6 @@ namespace iStats
 							<td style=\"text-align: right;\">&nbsp;{racingWeek.mFieldPeak}</td><td style=\"text-align: right;\">{racingWeek.mSplitPeak}&nbsp;</td>
 							<td style=\"text-align: right;\">&nbsp;{racingWeek.mFieldMax}</td><td style=\"text-align: right;\">{racingWeek.mSplitMax}&nbsp;</td></tr>
 							""");
-
-							highestTotalWeekIdx = Math.Max(highestTotalWeekIdx, racingWeek.TotalWeekIdx);
-							lowestTotalWeekIdx = Math.Min(lowestTotalWeekIdx, racingWeek.TotalWeekIdx);
 						}
 					}
 				}
