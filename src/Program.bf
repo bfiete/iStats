@@ -1943,6 +1943,26 @@ namespace iStats
 			{
 				highestTotalWeekIdx = weekIndices[Math.Max(0, weekIndices.Count - 12)];
 				lowestTotalWeekIdx = weekIndices[Math.Min(12, weekIndices.Count - 1)];
+
+				int prevWeekIdx = 0;
+				int spanLength = 0;
+				for (int checkIdx in (0..<weekIndices.Count).Reversed)
+				{
+					var weekIdx = weekIndices[checkIdx];
+					if (weekIdx == prevWeekIdx)
+					{
+						if (++spanLength >= 12)
+						{
+							highestTotalWeekIdx = weekIdx;
+							break;
+						}
+					}
+					else
+					{
+						prevWeekIdx = weekIdx;
+						spanLength = 0;
+					}
+				}
 			}
 
 			void AddKindNav(String outStr, int32 totalWeekIdx, SeriesKind seriesKind = .Unknown)
