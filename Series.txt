@@ -14,7 +14,7 @@
 3632W1 Advanced Mazda MX-5 Cup Apex Sim Racing Series : Road
 	LICENSE C
 	ID 231
-0 Advanced Mazda MX-5 Cup Series : Advanced Mazda MX-5 Cup Series	
+0 Advanced Mazda MX-5 Cup Series : Advanced Mazda MX-5 Cup Apex Sim Racing Series
 3677W1 AMSOIL USAC Sprint Car : DirtOval
 	LICENSE B
 	ID 309
