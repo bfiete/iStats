@@ -128,12 +128,12 @@
 3653W1 Formula 3.5 Championship : Road
 	LICENSE B
 	ID 359
-0 Formula Renault 2.0 : Road
-	LICENSE D
-	ID 269
+0 Formula Renault 2.0 : Formula Renault 2.0 ButtKicker Series
 0 Formula Renault 2.0 Apex Academy Series : Formula Renault 2.0 Apex Racing Academy Series
 0 Formula Renault 2.0 Apex Racing Academy Series : Formula Renault 2.0
-3616W1 Formula Renault 2.0 ButtKicker Series
+3616W1 Formula Renault 2.0 ButtKicker Series : Road
+	LICENSE D
+	ID 269
 0 Formula Vee iRacing Series : Formula Vee Sim Racing Studio Series
 3602W1 Formula Vee Sim Racing Studio Series : Road
 	LICENSE R
@@ -165,17 +165,17 @@
 3646W1 GT3 Fanatec Challenge - Fixed : Road
 	LICENSE B
 	ID 444
-3606W1 GT4 Falken Tyre Challenge - Fixed
+3606W1 GT4 Falken Tyre Challenge - Fixed : Road
 0 GTE Endurance Series : Road
 0 Heusinkveld GT Challenge : Road
 0 IMSA 90 Minutes of Sebring : Road
 0 IMSA Endurance Series : Road
 	LICENSE B
 	ID 419
-0 IMSA Hagerty iRacing Series : Road
+0 IMSA Hagerty iRacing Series : IMSA iRacing Series
+3645W1 IMSA iRacing Series : Road
 	LICENSE B
 	ID 447
-3645W1 IMSA iRacing Series
 3617W1 IMSA Michelin Pilot Challenge : Road
 	LICENSE C
 	ID 386
@@ -208,7 +208,7 @@
 0 iRacing F3 Championship : F3 Championship
 0 iRacing F3 Championship - Fixed : F3 Vertagear Championship - Fixed
 0 iRacing Formula 3.5 Championship : Formula 3.5 Championship
-3693W1 iRacing Formula iR-04 Challenge
+3693W1 iRacing Formula iR-04 Challenge : Road
 0 iRacing Formula Renault 2.0 : Formula Renault 2.0 Apex Academy Series
 0 iRacing Grand Prix Series : Grand Prix Series
 0 iRacing Knoxville Nationals
@@ -314,11 +314,11 @@
 	ID 465
 0 Pro 2 and Pro 2 Lite Off Road Racing Series
 0 Pro 2 Lite Truck Championship
-3688W1 Pro 2 Off Road Racing Series
+3688W1 Pro 2 Off Road Racing Series : DirtRoad
 3686W1 Pro 2 Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE C
 	ID 464
-3687W1 Pro 4 Off Road Racing Series
+3687W1 Pro 4 Off Road Racing Series : DirtRoad
 3685W1 Pro 4 Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE D
 	ID 463
@@ -338,17 +338,17 @@
 	LICENSE C
 	ID 461
 0 Roar Before the 24
-3662W1 Rookie DIRTcar Street Stock Series - Fixed
+3662W1 Rookie DIRTcar Street Stock Series - Fixed : DirtRoad
 0 Rookie iRacing Rallycross Series : DirtRoad
 	LICENSE R
 	ID 459
 3680W1 Rookie iRX Volkswagen Beetle Lite - Fixed : DirtRoad
 	LICENSE R
 	ID 459
-0 Rookie Legends Cup : Oval
+0 Rookie Legends Cup : Rookie Legends VRS Cup
+3599W1 Rookie Legends VRS Cup : Oval
 	LICENSE R
 	ID 32
-3599W1 Rookie Legends VRS Cup
 3684W1 Rookie Pro 2 Lite Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE R
 	ID 462
@@ -377,14 +377,14 @@
 3644W1 Sprint Car Cup : Oval
 	LICENSE B
 	ID 131
-3690W1 Stock Car Brasil
+3690W1 Stock Car Brasil : Oval
 3600W1 Street Stock Fanatec Series - R : Oval
 	LICENSE R
 	ID 182
-3623W1 Street Stock Next Level Racing Series - C
-0 Street Stock Series - C : Oval
+3623W1 Street Stock Next Level Racing Series - C : Oval
 	LICENSE C
 	ID 190
+0 Street Stock Series - C : Street Stock Next Level Racing Series - C
 0 Stress Test Event
 3674W1 SUPER DIRTcar Big Block Modified Series : DirtOval
 	LICENSE C
