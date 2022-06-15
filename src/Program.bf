@@ -874,9 +874,23 @@ namespace iStats
 			mTransferSW.Start();
 			defer mTransferSW.Stop();
 
+			/*mUserName.Set("CLunky@iracing.Com");
+			mPassword.Set("MyPassWord");*/
+
 			Transfer trans = scope .(mCurl);
 			mCurl.SetOpt(.CookieFile, "cookies.txt");
-			trans.InitPost("https://members.iracing.com/membersite/Login", scope $"username={mUserName}&password={mPassword}");
+			//trans.InitPost("https://members.iracing.com/membersite/Login", scope $"username={mUserName}&password={mPassword}");
+
+			String lowerEmail = scope String(mUserName);
+			lowerEmail.ToLower();
+
+			String str = scope String();
+			str.Append(mPassword);
+			str.Append(lowerEmail);
+			var hash = SHA256.Hash(.((.)str.Ptr, str.Length));
+			var base64 = Base64.Encode(.((.)&hash, sizeof(decltype(hash))), .. scope .());
+			trans.InitPost("https://members-ng.iracing.com/auth", scope $"email={mUserName}&password={base64}");
+
 			let result = trans.Perform();
 			switch (result)
 			{
