@@ -166,7 +166,7 @@
 3775W2 GT3 Fanatec Challenge - Fixed : Road
 	LICENSE B
 	ID 444
-3819W2 GT4 Falken Tyre Challenge
+3819W2 GT4 Falken Tyre Challenge : Road
 	LICENSE C
 	ID 502
 3730W2 GT4 Falken Tyre Challenge - Fixed : Road
@@ -217,7 +217,7 @@
 3733W2 iRacing Formula iR-04 Challenge : Road
 	LICENSE D
 	ID 497
-3734W2 iRacing Formula iR-04 Challenge - Fixed
+3734W2 iRacing Formula iR-04 Challenge - Fixed : Road
 	LICENSE D
 	ID 498
 0 iRacing Formula Renault 2.0 : Formula Renault 2.0 Apex Academy Series
@@ -342,7 +342,7 @@
 	ID 112
 0 Pure Driving School European Sprint Series : European Sprint Pure Driving School Series
 0 Pure Driving School Formula Sprint : Road
-3747W2 Radical Racing Challenge
+3747W2 Radical Racing Challenge : Road
 	LICENSE C
 	ID 74
 3747W1 Radical Racing Challenge C : Radical Racing Challenge
@@ -431,7 +431,7 @@
 	ID 503
 0 Touring Car Challenge - Fixed
 0 Touring Car Turn Racing Challenge : Touring Car Challenge
-3731W2 Touring Car Turn Racing Challenge - Fixed
+3731W2 Touring Car Turn Racing Challenge - Fixed : Road
 	LICENSE D
 	ID 430
 0 Trak Racer Dallara Dash : Dallara Dash
