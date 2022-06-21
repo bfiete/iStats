@@ -5,21 +5,21 @@
 0 24 Hours of Nurburgring : Road
 0 24 Hours of Spa : Road
 0 4 Hours of Charlotte : Road
-0 6 Hours of the Glen : Road
+3842W1 6 Hours of the Glen : Road
 0 Adanced Legends Cup : Advanced Legends Cup
 0 Advanced Legends Cup : Advanced Legends VRS Cup
-3603W1 Advanced Legends VRS Cup : Oval
+3727W2 Advanced Legends VRS Cup : Oval
 	LICENSE R
 	ID 32
-3632W1 Advanced Mazda MX-5 Cup Apex Sim Racing Series : Road
+3760W2 Advanced Mazda MX-5 Cup Apex Sim Racing Series : Road
 	LICENSE C
 	ID 231
 0 Advanced Mazda MX-5 Cup Series : Advanced Mazda MX-5 Cup Apex Sim Racing Series
-3677W1 AMSOIL USAC Sprint Car : DirtOval
+3805W2 AMSOIL USAC Sprint Car : DirtOval
 	LICENSE B
 	ID 309
 0 Apex Racing Academy F3 Championship : F3 Championship
-3612W1 ARCA Menards Series : Oval
+3738W2 ARCA Menards Series : Oval
 	LICENSE D
 	ID 167
 0 Bathurst 1000 : Bathurst 12 Hour
@@ -41,7 +41,7 @@
 0 Carburetor Cup
 	LICENSE R
 	ID 116
-3652W1 Classic Lotus Grand Prix : Road
+3774W2 Classic Lotus Grand Prix : Road
 	LICENSE B
 	ID 65
 0 Coliseum Clash
@@ -54,40 +54,42 @@
 	LICENSE R
 	ID 471
 0 Dallara Dash Z1 Dashboard Analyzer Series
-3658W1 Dallara Formula iR : Road
+3786W1 Dallara Formula iR : Road
 	LICENSE B
 	ID 429
 0 Daytona 24
-3663W1 Dirt Legends Cup : DirtOval
+3818W1 Dirt 410 Sprint Car Tour - Fixed
+3791W2 Dirt Legends Cup : DirtOval
 	LICENSE R
 	ID 315
-3671W1 Dirt Midget Cup : DirtOval
+3799W2 Dirt Midget Cup : DirtOval
 	LICENSE C
 	ID 327
-3664W1 DIRTcar 305 Sprint Car Fanatec Series : DirtOval
+3817W1 Dirt Super Late Model Tour - Fixed
+3792W2 DIRTcar 305 Sprint Car Fanatec Series : DirtOval
 	LICENSE D
 	ID 292
-3666W1 DIRTcar 358 Modified Engine Ice Series : DirtOval
+3794W2 DIRTcar 358 Modified Engine Ice Series : DirtOval
 	LICENSE D
 	ID 466
 0 DIRTcar 358 Modified Series
-3667W1 DIRTcar 360 Sprint Car Series : DirtOval
+3795W2 DIRTcar 360 Sprint Car Series : DirtOval
 	LICENSE C
 	ID 305
-3669W1 DIRTcar Class C Street Stock Series - Fixed : DirtOval
+3797W2 DIRTcar Class C Street Stock Series - Fixed : DirtOval
 	LICENSE C
 	ID 311
-3665W1 DIRTcar Limited Late Model Series : DirtOval
+3793W2 DIRTcar Limited Late Model Series : DirtOval
 	LICENSE D
 	ID 291
-3672W1 DIRTcar Pro Late Model Next Level Racing Series : DirtOval
+3800W2 DIRTcar Pro Late Model Next Level Racing Series : DirtOval
 	LICENSE C
 	ID 306
 0 DIRTcar Pro Late Model Series : DIRTcar Pro Late Model Next Level Racing Series
-0 DIRTcar Street Stock Buttkicker Series - Fixed : Rookie DIRTcar Street Stock Series - Fixed	
+0 DIRTcar Street Stock Buttkicker Series - Fixed : Rookie DIRTcar Street Stock Series - Fixed
 0 DIRTcar Street Stock Series - Fixed : DIRTcar Street Stock Buttkicker Series - Fixed
 0 DIRTcar UMP Modified Series
-3673W1 DIRTcar UMP Modified Series - Fixed : DirtOval
+3801W2 DIRTcar UMP Modified Series - Fixed : DirtOval
 	LICENSE B
 	ID 442
 0 eNASCAR Coca-Cola Series
@@ -98,20 +100,21 @@
 0 eNASCAR RTP Contender Series
 0 eNASCAR World Championship Series
 0 Engine Ice DIRTcar 358 Modified Series : DirtOval
+0 European Endurance Pure Driving School Series
 0 European Endurance Series
 0 European Endurance VRS Series : Road
 	LICENSE C
 	ID 451
-3649W1 European Sprint Pure Driving School Series : Road
+3778W2 European Sprint Pure Driving School Series : Road
 	LICENSE A
 	ID 448
 0 European Sprint Series : European Sprint Pure Driving School Series
 0 F3 Championship : F3 Next Level Racing Championship
-3633W1 F3 DOF Reality Championship : Road
+3761W2 F3 DOF Reality Championship : Road
 	LICENSE C
 	ID 431
 0 F3 Next Level Racing Championship : F3 DOF Reality Championship
-3634W1 F3 Vertagear Championship - Fixed : Road
+3762W2 F3 Vertagear Championship - Fixed : Road
 	LICENSE C
 	ID 456
 0 Fanatec DIRTcar 305 Sprint Car Series : DIRTcar 305 Sprint Car Fanatec Series
@@ -120,77 +123,80 @@
 0 Fanatec GT Challenge : GT Heusinkveld Challenge
 0 Fanatec GT3 Challenge - Fixed : GT3 Fanatec Challenge - Fixed
 0 Fanatec Street Stock Series - R : Oval
-3608W1 Ferrari GT3 Challenge - Fixed : Road
+3732W2 Ferrari GT3 Challenge - Fixed : Road
 	LICENSE D
 	ID 353
-3653W1 Formula 3.5 Championship : Road
+3781W2 Formula 3.5 Championship : Road
 	LICENSE B
 	ID 359
 0 Formula Renault 2.0 : Formula Renault 2.0 ButtKicker Series
 0 Formula Renault 2.0 Apex Academy Series : Formula Renault 2.0 Apex Racing Academy Series
 0 Formula Renault 2.0 Apex Racing Academy Series : Formula Renault 2.0
-3616W1 Formula Renault 2.0 ButtKicker Series : Road
+3742W2 Formula Renault 2.0 ButtKicker Series : Road
 	LICENSE D
 	ID 269
 0 Formula Vee iRacing Series : Formula Vee Sim Racing Studio Series
-3602W1 Formula Vee Sim Racing Studio Series : Road
+3726W2 Formula Vee Sim Racing Studio Series : Road
 	LICENSE R
 	ID 455
-3620W1 Global Fanatec Challenge : Road
+3745W2 Global Fanatec Challenge : Road
 	LICENSE D
 	ID 210
-3601W1 Global Mazda MX-5 Fanatec Cup : Road
+3725W2 Global Mazda MX-5 Fanatec Cup : Road
 	LICENSE R
 	ID 139
-3641W1 Grand Prix Legends : Road
+3769W2 Grand Prix Legends : Road
 	LICENSE C
 	ID gplegends
-3656W1 Grand Prix Series : Road
+3784W2 Grand Prix Series : Road
 	LICENSE A
 	ID 260
-3657W1 Grand Prix Series Sprint - Fixed : Road
+3785W2 Grand Prix Series Sprint - Fixed : Road
 	LICENSE A
 	ID 260
-0 GT Endurance VRS Series : Road
+3777W1 GT Endurance VRS Series : Road
 	LICENSE C
 	ID 237
-3640W1 GT Heusinkveld Challenge : Road
+3768W2 GT Heusinkveld Challenge : Road
 	LICENSE C
 	ID 432
-3647W1 GT Sprint VRS Series : Road
+3776W2 GT Sprint VRS Series : Road
 	LICENSE B
 	ID 228
-3646W1 GT3 Fanatec Challenge - Fixed : Road
+3775W2 GT3 Fanatec Challenge - Fixed : Road
 	LICENSE B
 	ID 444
-3606W1 GT4 Falken Tyre Challenge - Fixed : Road
+3819W2 GT4 Falken Tyre Challenge
+	LICENSE C
+	ID 502
+3730W2 GT4 Falken Tyre Challenge - Fixed : Road
 	LICENSE D
 	ID 491
 0 GTE Endurance Series : Road
 0 Heusinkveld GT Challenge : Road
 0 IMSA 90 Minutes of Sebring : Road
-0 IMSA Endurance Series : Road
+3780W1 IMSA Endurance Series : Road
 	LICENSE B
 	ID 419
 0 IMSA Hagerty iRacing Series : IMSA iRacing Series
-3645W1 IMSA iRacing Series : Road
+3773W2 IMSA iRacing Series : Road
 	LICENSE B
 	ID 447
-3617W1 IMSA Michelin Pilot Challenge : Road
+0 IMSA Michelin Pilot Challenge : Road
 	LICENSE C
 	ID 386
 0 IMSA Sportscar Championship : IMSA Hagerty iRacing Series
 0 IMSA Triple Crown
-3635W1 Indy Pro 2000 Championship : Road
+3763W2 Indy Pro 2000 Championship : Road
 	LICENSE C
 	ID 414
 0 IndyCar iRacing Series : Road
 	LICENSE B
 	ID 133
-3630W1 IndyCar Series - Fixed : Oval
+3758W2 IndyCar Series - Fixed : Oval
 	LICENSE C
 	ID 165
-3631W1 IndyCar Series - Open : Oval
+3759W2 IndyCar Series - Open : Oval
 	LICENSE C
 	ID 165
 0 IndyCar Series - Oval - Fixed : Oval
@@ -208,11 +214,16 @@
 0 iRacing F3 Championship : F3 Championship
 0 iRacing F3 Championship - Fixed : F3 Vertagear Championship - Fixed
 0 iRacing Formula 3.5 Championship : Formula 3.5 Championship
-3693W1 iRacing Formula iR-04 Challenge : Road
+3733W2 iRacing Formula iR-04 Challenge : Road
 	LICENSE D
 	ID 497
+3734W2 iRacing Formula iR-04 Challenge - Fixed
+	LICENSE D
+	ID 498
 0 iRacing Formula Renault 2.0 : Formula Renault 2.0 Apex Academy Series
 0 iRacing Grand Prix Series : Grand Prix Series
+0 iRacing Grand Prix Tour
+0 iRacing Grand Prix Tour - Fixed
 0 iRacing Knoxville Nationals
 0 iRacing Late Model Tour : Late Model Tour
 0 iRacing Late Model Tour - Fixed : Late Model Tour - Fixed
@@ -226,68 +237,69 @@
 0 iRacing Super Late Model Series - Fixed : Super Late Model Series - Fixed
 0 iRacing.com Indy 500 : Oval
 0 iRacing.com Indy 500 - Fixed : Oval
-3681W1 iRX Volkswagen Beetle Lite : DirtRoad
+3808W2 iRX Volkswagen Beetle Lite : DirtRoad
 	LICENSE D
 	ID 460
 0 iRX World Championship Qualifying Series
 0 iRX World Championship Series
-3622W1 Kamel GT Championship : Road
+3748W2 Kamel GT Championship : Road
 	LICENSE C
 	ID 285
-3610W1 Late Model Tour : Oval
+3736W2 Late Model Tour : Oval
 	LICENSE D
 	ID lmtour
-3611W1 Late Model Tour - Fixed : Oval
+3737W2 Late Model Tour - Fixed : Oval
 	LICENSE D
 	ID 440
 0 LMP2 Prototype Challenge - Fixed : LMP2 Prototype Ricmotech Challenge - Fixed
-3609W1 LMP2 Prototype Ricmotech Challenge - Fixed : Road
+3735W2 LMP2 Prototype Ricmotech Challenge - Fixed : Road
 	LICENSE B
 	ID 457
-3654W1 NASCAR Class A : Oval
+0 MOAR Endurance Series
+3782W2 NASCAR Class A : Oval
 	LICENSE A
 	ID 58
-3655W1 NASCAR Class A Fixed : Oval
+3783W2 NASCAR Class A Fixed : Oval
 	LICENSE A
 	ID 191
-3642W1 NASCAR Class B Fixed : Oval
+3770W2 NASCAR Class B Fixed : Oval
 	LICENSE B
 	ID 103
-3628W1 NASCAR Class C Fixed : Oval
+3756W2 NASCAR Class C Fixed : Oval
 	LICENSE C
 	ID 164
 0 NASCAR iRacing Class A : NASCAR Class A
 0 NASCAR iRacing Class A Fixed : NASCAR Class A Fixed
-3588W5 NASCAR iRacing Class B : Oval
+0 NASCAR iRacing Class B : Oval
 	LICENSE B
 	ID 62
 0 NASCAR iRacing Class B Fixed : NASCAR Class B Fixed
-3587W5 NASCAR iRacing Class C : Oval
+0 NASCAR iRacing Class C : Oval
 	LICENSE C
 	ID 47
 0 NASCAR iRacing Class C Fixed : NASCAR Class C Fixed
 0 NASCAR iRacing Pro Series : Oval
-3589W4 NASCAR iRacing Series - Fixed : Oval
+0 NASCAR iRacing Series - Fixed : Oval
 	LICENSE A
 	ID 468
-3590W4 NASCAR iRacing Series - Open : Oval
+0 NASCAR iRacing Series - Open : Oval
 	LICENSE A
 	ID 468
 0 NASCAR iRacing Series Clash
 0 NASCAR iRacing Series Clash - Fixed
 0 NASCAR iRacing Tour Modified Series : NASCAR Tour Modified Series
 0 NASCAR iRacing Tour Modified Series - Fixed : NASCAR Tour Modified Series - Fixed
-3629W1 NASCAR Legends Series : Oval
+3757W2 NASCAR Legends Series : Oval
 	LICENSE B
 	ID 413
 0 NASCAR Next Gen Cup Series : NASCAR iRacing Series - Open
 0 NASCAR Next Gen Cup Series - Fixed : NASCAR iRacing Series - Fixed
 0 NASCAR Next Gen Cup Series Unranked - Fixed : Oval
 0 NASCAR Road to Pro : Oval
-3624W1 NASCAR Tour Modified Series : Oval
+3752W2 NASCAR Tour Modified Series : Oval
 	LICENSE C
 	ID tour
-3625W1 NASCAR Tour Modified Series - Fixed : Oval
+3753W2 NASCAR Tour Modified Series - Fixed : Oval
 	LICENSE C
 	ID 417
 0 North Wilkesboro Challenge
@@ -300,10 +312,10 @@
 0 PickUp Cup : Oval
 	LICENSE R
 	ID 259	
-3638W1 Porsche Cup : Road
+3766W2 Porsche Cup : Road
 	LICENSE C
 	ID 299
-3639W1 Porsche Cup - Fixed : Road
+3767W2 Porsche Cup - Fixed : Road
 	LICENSE C
 	ID 476
 0 Porsche Esports Sprint Challenge : Road
@@ -316,111 +328,119 @@
 	ID 465
 0 Pro 2 and Pro 2 Lite Off Road Racing Series
 0 Pro 2 Lite Truck Championship
-3688W1 Pro 2 Off Road Racing Series : DirtRoad
-3686W1 Pro 2 Off-Road Racing Series - Fixed : DirtRoad
+3815W2 Pro 2 Off Road Racing Series : DirtRoad
+3813W2 Pro 2 Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE C
 	ID 464
-3687W1 Pro 4 Off Road Racing Series : DirtRoad
-3685W1 Pro 4 Off-Road Racing Series - Fixed : DirtRoad
+3814W2 Pro 4 Off Road Racing Series : DirtRoad
+3812W2 Pro 4 Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE D
 	ID 463
 0 Pro Mazda Championship : Road
-3605W1 Production Car Sim-Lab Challenge : Road
+3729W2 Production Car Sim-Lab Challenge : Road
 	LICENSE D
 	ID 112
 0 Pure Driving School European Sprint Series : European Sprint Pure Driving School Series
 0 Pure Driving School Formula Sprint : Road
-3621W1 Radical Racing Challenge C : Road
+3747W2 Radical Racing Challenge
 	LICENSE C
 	ID 74
-3683W1 Rallycross Series : DirtRoad
+3747W1 Radical Racing Challenge C : Radical Racing Challenge
+	LICENSE C
+	ID 74
+3810W2 Rallycross Series : DirtRoad
 	LICENSE B
 	ID 325
-3682W1 Rallycross Series - Fixed : DirtRoad
+3809W2 Rallycross Series - Fixed : DirtRoad
 	LICENSE C
 	ID 461
 0 Roar Before the 24
-3662W1 Rookie DIRTcar Street Stock Series - Fixed : DirtRoad
+3790W2 Rookie DIRTcar Street Stock Extreme Simracing Series - Fixed
+0 Rookie DIRTcar Street Stock Series - Fixed : DirtRoad
 	LICENSE R
 	ID 446
 0 Rookie iRacing Rallycross Series : DirtRoad
 	LICENSE R
 	ID 459
-3680W1 Rookie iRX Volkswagen Beetle Lite - Fixed : DirtRoad
+3807W2 Rookie iRX Volkswagen Beetle Lite - Fixed : DirtRoad
 	LICENSE R
 	ID 459
 0 Rookie Legends Cup : Rookie Legends VRS Cup
-3599W1 Rookie Legends VRS Cup : Oval
+3723W2 Rookie Legends VRS Cup : Oval
 	LICENSE R
 	ID 32
-3684W1 Rookie Pro 2 Lite Off-Road Racing Series - Fixed : DirtRoad
+3811W2 Rookie Pro 2 Lite Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE R
 	ID 462
-3618W1 Ruf GT3 Challenge : Road
+3743W2 Ruf GT3 Challenge : Road
 	LICENSE D
 	ID 277
 0 RYCO-Motorsports.com DIRTcar Pro Late Model Series : DirtRoad
 0 RYCO-Motorsports.com SK Modifieds : Road
-3643W1 Silver Crown Cup : Oval
+3771W2 Silver Crown Cup : Oval
 	LICENSE B
 	ID 53
 0 Sim-Lab Production Car Challenge : Production Car Sim-Lab Challenge
-3613W1 SK Modified Weekly Series : Oval
+3739W2 SK Modified Weekly Series : Oval
 	LICENSE D
 	ID 45
-3614W1 SK Modified Weekly Series - Fixed : Oval
+3740W2 SK Modified Weekly Series - Fixed : Oval
 	LICENSE D
 	ID 441
-3615W1 Skip Barber Race Series : Road
+3741W2 Skip Barber Race Series : Road
 	LICENSE D
 	ID 34
 0 Sling Mud for Fun - Sprint Cars : DirtOval
-3619W1 Spec Racer Ford Challenge : Road
+3744W2 Spec Racer Ford Challenge : Road
 	LICENSE D
 	ID 63
-3644W1 Sprint Car Cup : Oval
+3772W2 Sprint Car Cup : Oval
 	LICENSE B
 	ID 131
-3690W1 Stock Car Brasil : Oval
+3749W2 Stock Car Brasil : Oval
 	LICENSE C
 	ID 493
-3600W1 Street Stock Fanatec Series - R : Oval
+3724W2 Street Stock Fanatec Series - R : Oval
 	LICENSE R
 	ID 182
-3623W1 Street Stock Next Level Racing Series - C : Oval
+3751W2 Street Stock Next Level Racing Series - C : Oval
 	LICENSE C
 	ID 190
 0 Street Stock Series - C : Street Stock Next Level Racing Series - C
 0 Stress Test Event
-3674W1 SUPER DIRTcar Big Block Modified Series : DirtOval
+3802W2 SUPER DIRTcar Big Block Modified Series : DirtOval
 	LICENSE C
 	ID 428
-3626W1 Super Late Model Series : Oval
+3754W2 Super Late Model Series : Oval
 	LICENSE C
 	ID superlatemodel
-3627W1 Super Late Model Series - Fixed : Oval
+3755W2 Super Late Model Series - Fixed : Oval
 	LICENSE C
 	ID 416
-3636W1 Supercars Series : Road
+3764W1 Supercars Series : Road
 	LICENSE C
 	ID 399
-3637W1 Supercars Series - Australian Server Only : Road
+3765W2 Supercars Series - Australian Server Only : Road
 	LICENSE C
 	ID 405
 0 Throwback Cup
 0 Thrustmaster iRX World Championship Series : DirtRoad
-3607W1 Touring Car Challenge : Road
-	LICENSE D
-	ID 430
+0 Touring Car Challenge - Touring Car Turn Racing Challenge
+3841W2 Touring Car Turn Racing Challenge : Road
+	LICENSE C
+	ID 503
 0 Touring Car Challenge - Fixed
 0 Touring Car Turn Racing Challenge : Touring Car Challenge
+3731W2 Touring Car Turn Racing Challenge - Fixed
+	LICENSE D
+	ID 430
 0 Trak Racer Dallara Dash : Dallara Dash
 0 Turn Racing Touring Car Challenge : Touring Car Turn Racing Challenge
-3668W1 USAC 360 Sprint Car Series : DirtOval
+3796W2 USAC 360 Sprint Car Series : DirtOval
 	LICENSE C
 	ID 310
 0 USAC World Championship Series
-3604W1 USF 2000 Cooper Tires Championship - Fixed : Road
+3728W2 USF 2000 Cooper Tires Championship - Fixed : Road
 	LICENSE D
 	ID 443
 0 VRS European Endurance Series : VRS Global Endurance Series
@@ -435,21 +455,21 @@
 	LICENSE C
 	ID 482
 0 Winter iRacing NASCAR Series - Fixed
+0 WoO Late Model Buttkicker Qualifying Series
 0 WoO Late Model WC Series : DirtOval
 0 WoO Sprint Car Qualifying Series : DirtOval
 	LICENSE A
 	ID 335
 0 WoO Sprint Car WC Series : DirtOval
-3678W1 World of Outlaws Late Model Series : DirtOval
+3806W2 World of Outlaws Late Model Series : DirtOval
 	LICENSE B
 	ID 308
-3670W1 World of Outlaws Late Model Series - Fixed : DirtOval
+3798W2 World of Outlaws Late Model Series - Fixed : DirtOval
 	LICENSE C
 	ID 369
-3675W1 World of Outlaws Sprint Car Series : DirtOval
+3803W2 World of Outlaws Sprint Car Series : DirtOval
 	LICENSE B
 	ID 307
-3676W1 World of Outlaws Sprint Car Series - Fixed : DirtOval
+3804W2 World of Outlaws Sprint Car Series - Fixed : DirtOval
 	LICENSE B
 	ID 458
-
