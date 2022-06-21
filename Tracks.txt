@@ -325,3 +325,12 @@
 434 Watkins Glen International - Boot
 435 Watkins Glen International - Classic Boot
 436 Knockhill Racing Circuit - Tri-Oval
+437 LA Coliseum Raceway
+438 Federated Auto Parts Raceway at I-55
+439 Winton Motor Raceway - National Circuit
+440 Winton Motor Raceway - Club Circuit
+442 Bristol Motor Speedway - Dirt
+443 Sandown International Motor Raceway
+444 Fuji Speedway - Grand Prix
+445 Fuji Speedway - No chicanes
+446 Port Royal Speedway
