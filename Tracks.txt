@@ -334,4 +334,5 @@
 444 Fuji Speedway - Grand Prix
 445 Fuji Speedway - No chicanes
 446 Port Royal Speedway
+447 Atlanta Motor Speedway - Oval
 448 Indianapolis Motor Speedway - Road Course
