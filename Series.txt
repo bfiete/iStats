@@ -473,3 +473,6 @@
 3804W2 World of Outlaws Sprint Car Series - Fixed : DirtOval
 	LICENSE B
 	ID 458
+3868W1 Mission R Challenge - Fixed : Road
+	LICENSE C
+	ID 504
