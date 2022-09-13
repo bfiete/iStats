@@ -214,10 +214,10 @@
 0 iRacing F3 Championship : F3 Championship
 0 iRacing F3 Championship - Fixed : F3 Vertagear Championship - Fixed
 0 iRacing Formula 3.5 Championship : Formula 3.5 Championship
-3733W2 iRacing Formula iR-04 Challenge : Road
+3858W1 iRacing Formula iR-04 Challenge : Road
 	LICENSE D
 	ID 497
-3734W2 iRacing Formula iR-04 Challenge - Fixed : Road
+3859W1 iRacing Formula iR-04 Challenge - Fixed : Road
 	LICENSE D
 	ID 498
 0 iRacing Formula Renault 2.0 : Formula Renault 2.0 Apex Academy Series
