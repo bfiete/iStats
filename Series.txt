@@ -397,7 +397,7 @@
 3772W2 Sprint Car Cup : Oval
 	LICENSE B
 	ID 131
-3749W2 Stock Car Brasil : Oval
+3749W2 Stock Car Brasil : Road
 	LICENSE C
 	ID 493
 3724W2 Street Stock Fanatec Series - R : Oval
