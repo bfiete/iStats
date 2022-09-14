@@ -255,6 +255,9 @@
 3735W2 LMP2 Prototype Ricmotech Challenge - Fixed : Road
 	LICENSE B
 	ID 457
+3868W2 Mission R Challenge - Fixed - 2022 Season 4 Fixed
+	LICENCE D
+	ID 504
 0 MOAR Endurance Series
 3782W2 NASCAR Class A : Oval
 	LICENSE A
