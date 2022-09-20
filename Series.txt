@@ -11,7 +11,7 @@
 3727W2 Advanced Legends VRS Cup : Oval
 	LICENSE R
 	ID 32
-3760W2 Advanced Mazda MX-5 Cup Apex Sim Racing Series : Road
+3884W4 Advanced Mazda MX-5 GarageXYZ Cup Series : Road
 	LICENSE C
 	ID 231
 0 Advanced Mazda MX-5 Cup Series : Advanced Mazda MX-5 Cup Apex Sim Racing Series
