@@ -266,8 +266,8 @@
 	LICENSE B
 	ID 457
 3868W2 Mission R Challenge - Fixed : Road
-	LICENCE D
-	ID 504
+	LICENSE D
+	ID 504	
 0 MOAR Endurance Series
 3907W2 NASCAR Class A : Oval
 	LICENSE A
