@@ -310,6 +310,7 @@
 99 Barber Motorsports Park - Short A
 413 Hungaroring
 414 Hickory Motor Speedway
+418 Phoenix Raceway - Oval
 419 Phoenix Raceway
 423 Knockhill Racing Circuit - International
 424 Knockhill Racing Circuit - International Reverse
