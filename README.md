@@ -3,7 +3,7 @@ iRacing stats
 
 This tool generates statistics from iRacing participation data. The programming language used for HTML generation is [BeefLang](https://www.beeflang.org/).
 
-# Modiying Series.txt
+# Modifying Series.txt
 
 You can manually extract iRacing series data by viewing the source from https://members.iracing.com/membersite/member/Series.do - a series ID, for example, will be in some JSON around `"seriesid":` for each series.
 
