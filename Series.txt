@@ -255,7 +255,7 @@
 0 iRacing Formula iR-04 Ricmotech Challenge : Formula D - Ricmotech iR-04 Challenge
 0 iRacing Formula iR-04 Ricmotech Challenge - Fixed : Formula D - Ricmotech iR-04 Challenge - Fixed
 0 iRacing Formula Renault 2.0 : Formula Renault 2.0 Apex Academy Series
-4077W1 iRacing GR Cup - Fixed
+4077W1 iRacing GR Cup - Fixed : Road
 	LICENSE D
 	ID 514
 0 iRacing Grand Prix Series : Grand Prix Series
