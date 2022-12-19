@@ -116,7 +116,7 @@
 0 eNASCAR RTP Contender Series
 0 eNASCAR World Championship Series
 0 Engine Ice DIRTcar 358 Modified Series : DirtOval
-4036W1 European Endurance Pure Driving School Series : Road
+0 European Endurance Pure Driving School Series : Road
 	LICENSE A
 	ID 331
 0 European Endurance Series
@@ -158,7 +158,7 @@
 4018W1 Formula C - DOF Reality Dallara F3 Series : Road
 	LICENSE C
 	ID 431
-4019W1 Formula C - Moza Racing Dallara F3 Series - Fixed : Road
+4019W1 Formula C - Moza Racing Dallara F3 Series- Fixed : Road
 	LICENSE C
 	ID 456
 3992W1 Formula D - Ricmotech iR-04 Challenge : Road
@@ -223,7 +223,7 @@
 4030W1 IMSA iRacing Series : Road
 	LICENSE B
 	ID 447
-4007W1 IMSA Michelin Pilot Challenge : Road
+0 IMSA Michelin Pilot Challenge : Road
 	LICENSE C
 	ID 386
 0 IMSA Michelin Pilot Challenge Series
@@ -449,7 +449,7 @@
 4029W1 Sprint Car Cup : Oval
 	LICENSE B
 	ID 131
-0 Stock Car Brasil : Stock Car Brasil - Fixed	
+0 Stock Car Brasil : Stock Car Brasil - Fixed
 4006W1 Stock Car Brasil - Fixed : Road
 	LICENSE C
 	ID 493
@@ -516,10 +516,10 @@
 0 VRS GT Sprint Series : GT Sprint VRS Series
 0 Winter Derby
 0 Winter Derby - Fixed
-3976W5 Winter iRacing NASCAR Series : Oval
+3976W6 Winter iRacing NASCAR Series : Oval
 	LICENSE C
 	ID 482
-3977W5 Winter iRacing NASCAR Series - Fixed : Oval
+3977W6 Winter iRacing NASCAR Series - Fixed : Oval
 	LICENSE C
 	ID 481
 0 WoO Late Model Buttkicker Qualifying Series
