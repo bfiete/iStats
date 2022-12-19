@@ -61,6 +61,8 @@
 	ID 429
 0 Daytona 24
 4061W1 Dirt 410 Sprint Car Tour - Fixed
+	LICENSE C
+	ID 501
 4048W1 Dirt Legends Cup : DirtOval
 	LICENSE R
 	ID 315
@@ -68,7 +70,11 @@
 	LICENSE C
 	ID 327
 4083W1 Dirt Midget Cup - Fixed
+	LICENSE C
+	ID 516
 4065W1 Dirt Super Late Model Tour - Fixed
+	LICENSE C
+	ID 500
 4049W1 DIRTcar 305 Sprint Car Fanatec Series : DirtOval
 	LICENSE D
 	ID 292
@@ -80,6 +86,8 @@
 	LICENSE C
 	ID 305
 4082W1 DIRTcar 360 Sprint Car Carquest Series - Fixed
+	LICENSE C
+	ID 515
 0 DIRTcar 360 Sprint Car Series : DIRTcar 360 Sprint Car Carquest Series
 4054W1 DIRTcar Class C Street Stock Series - Fixed : DirtOval
 	LICENSE C
@@ -92,6 +100,8 @@
 	ID 306
 0 DIRTcar Pro Late Model Series : DIRTcar Pro Late Model Next Level Racing Series
 4084W1 DIRTcar Pro Late Model Series - Fixed
+	LICENSE C
+	ID 517
 0 DIRTcar Street Stock Buttkicker Series - Fixed : Rookie DIRTcar Street Stock Series - Fixed
 0 DIRTcar Street Stock Series - Fixed : DIRTcar Street Stock Buttkicker Series - Fixed
 0 DIRTcar UMP Modified Series
@@ -106,7 +116,9 @@
 0 eNASCAR RTP Contender Series
 0 eNASCAR World Championship Series
 0 Engine Ice DIRTcar 358 Modified Series : DirtOval
-0 European Endurance Pure Driving School Series
+4036W1 European Endurance Pure Driving School Series : Road
+	LICENSE A
+	ID 331
 0 European Endurance Series
 0 European Endurance VRS Series : Road
 	LICENSE C
@@ -135,12 +147,20 @@
 	ID 353
 0 Formula 3.5 Championship : Formula B - ButtKicker Formula Renault 3.5 Series
 4041W1 Formula A - Grand Prix Series
+	LICENSE A
+	ID 260
 4042W1 Formula A - Grand Prix Series - Fixed
+	LICENSE C
+	ID 484
 4038W1 Formula B - ButtKicker Formula Renault 3.5 Series : Road
 	LICENSE B
 	ID 359
 4018W1 Formula C - DOF Reality Dallara F3 Series
+	LICENSE C
+	ID 431
 4019W1 Formula C - Moza Racing Dallara F3 Series- Fixed
+	LICENSE C
+	ID 456
 3992W1 Formula D - Ricmotech iR-04 Challenge : Road
 	LICENSE D
 	ID 497
@@ -175,7 +195,7 @@
 0 Grand Prix Series Sprint - Fixed : Road
 	LICENSE A
 	ID 260
-0 GT Endurance VRS Series : Road
+4034W1 GT Endurance VRS Series : Road
 	LICENSE C
 	ID 237
 4025W1 GT Heusinkveld Challenge : Road
@@ -196,14 +216,14 @@
 0 GTE Endurance Series : Road
 0 Heusinkveld GT Challenge : Road
 0 IMSA 90 Minutes of Sebring : Road
-0 IMSA Endurance Series : Road
+4037W1 IMSA Endurance Series : Road
 	LICENSE B
 	ID 419
 0 IMSA Hagerty iRacing Series : IMSA iRacing Series
 4030W1 IMSA iRacing Series : Road
 	LICENSE B
 	ID 447
-0 IMSA Michelin Pilot Challenge : Road
+4007W1 IMSA Michelin Pilot Challenge : Road
 	LICENSE C
 	ID 386
 0 IMSA Michelin Pilot Challenge Series
@@ -236,6 +256,8 @@
 0 iRacing Formula iR-04 Ricmotech Challenge - Fixed : Formula D - Ricmotech iR-04 Challenge - Fixed
 0 iRacing Formula Renault 2.0 : Formula Renault 2.0 Apex Academy Series
 4077W1 iRacing GR Cup - Fixed
+	LICENSE D
+	ID 514
 0 iRacing Grand Prix Series : Grand Prix Series
 0 iRacing Grand Prix Tour
 0 iRacing Grand Prix Tour - Fixed
@@ -353,6 +375,8 @@
 	LICENSE C
 	ID 464
 4073W1 Pro 4 Off Road Racing Series : DirtRoad
+	LICENSE B
+	ID 391
 4071W1 Pro 4 Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE D
 	ID 463
@@ -376,6 +400,8 @@
 	ID 461
 0 Roar Before the 24
 4047W1 Rookie DIRTcar Street Stock Extreme Simracing Series - Fixed
+	LICENSE R
+	ID 446
 0 Rookie DIRTcar Street Stock Series - Fixed : DirtRoad
 	LICENSE R
 	ID 446
@@ -454,6 +480,8 @@
 	LICENSE C
 	ID 405
 4021W1 Supercars Series - Fixed
+	LICENSE C
+	ID 399
 0 Throwback Cup
 0 Thrustmaster iRX World Championship Series : DirtRoad
 0 Touring Car Challenge
@@ -477,6 +505,8 @@
 	LICENSE C
 	ID 165
 3985W1 US Open Wheel D - USF 2000 Series - Fixed
+	LICENSE D
+	ID 443
 4053W1 USAC 360 Sprint Car Series : DirtOval
 	LICENSE C
 	ID 310
@@ -496,6 +526,8 @@
 	LICENSE C
 	ID 482
 3977W5 Winter iRacing NASCAR Series - Fixed
+	LICENSE C
+	ID 481
 0 WoO Late Model Buttkicker Qualifying Series
 0 WoO Late Model WC Series : DirtOval
 0 WoO Sprint Car Carquest Qualifying Series
