@@ -340,6 +340,7 @@
 449 Motorsport Arena Oschersleben - Grand Prix
 451 Rudskogen Motorsenter
 452 Lucas Oil Raceway - Oval
+462 Lincoln Speedway
 463 Circuit de Nevers Magny-Cours - Grand Prix
 465 Virginia International Raceway - Full Course
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
