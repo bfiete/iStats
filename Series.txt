@@ -150,7 +150,7 @@
 	LICENSE A
 	ID 260
 4042W1 Formula A - Grand Prix Series - Fixed : Road
-	LICENSE C
+	LICENSE A
 	ID 484
 4038W1 Formula B - ButtKicker Formula Renault 3.5 Series : Road
 	LICENSE B
