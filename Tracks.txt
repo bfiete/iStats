@@ -343,4 +343,5 @@
 462 Lincoln Speedway
 463 Circuit de Nevers Magny-Cours - Grand Prix
 465 Virginia International Raceway - Full Course
+467 Virginia International Raceway - North
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
