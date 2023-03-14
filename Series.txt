@@ -541,3 +541,6 @@
 4060W1 World of Outlaws Sprint Car Series - Fixed : DirtOval
 	LICENSE B
 	ID 458
+4220W1 iRacing Clio Cup - Fixed : Road
+	LICENSE D
+	ID 514
