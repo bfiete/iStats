@@ -347,3 +347,4 @@
 467 Virginia International Raceway - North
 470 Daytona International Speedway - Dirt Road Long
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
+473 Circuito de Jerez - Ángel Nieto - Grand Prix
