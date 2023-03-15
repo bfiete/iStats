@@ -148,7 +148,11 @@
 	LICENSE D
 	ID 353
 4221W1 Formula 1600 Rookie Series - Fixed
+	LICENSE R
+	ID 519
 4224W1 Formula 1600 Trophy
+	LICENSE D
+	ID 520
 0 Formula 3.5 Championship : Formula B - ButtKicker Formula Renault 3.5 Series
 4182W1 Formula A - Grand Prix Series : Road
 	LICENSE A
@@ -224,7 +228,9 @@
 	LICENSE D
 	ID 491
 0 GTE Endurance Series : Road
-0 Heusinkveld GT Challenge : Road
+4166W1 Heusinkveld GT Challenge : Road
+	LICENSE C
+	ID 521
 0 IMSA 90 Minutes of Sebring : Road
 0 IMSA Endurance Series : Road
 	LICENSE B
