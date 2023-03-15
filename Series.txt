@@ -17,7 +17,7 @@
 4158W1 Advanced Mazda MX-5 GarageXYZ Cup Series : Road
 	LICENSE C
 	ID 231
-0 AMSOIL USAC Sprint Car : DirtOval
+4207W1 AMSOIL USAC Sprint Car : DirtOval
 	LICENSE B
 	ID 309
 0 Apex Racing Academy F3 Championship : F3 Championship
@@ -62,7 +62,7 @@
 	ID 429
 4184W1 Dallara Formula iR - Fixed
 0 Daytona 24
-0 Dirt 410 Sprint Car Tour - Fixed : DirtOval
+4206W1 Dirt 410 Sprint Car Tour - Fixed : DirtOval
 	LICENSE C
 	ID 501
 4189W1 Dirt Legends Cup : DirtOval
@@ -74,7 +74,7 @@
 4198W1 Dirt Midget Cup - Fixed : DirtOval
 	LICENSE C
 	ID 516
-0 Dirt Super Late Model Tour - Fixed : DirtOval
+4210W1 Dirt Super Late Model Tour - Fixed : DirtOval
 	LICENSE C
 	ID 500
 4190W1 DIRTcar 305 Sprint Car Fanatec Series : DirtOval
@@ -147,10 +147,10 @@
 4132W1 Ferrari GT3 Challenge - Fixed : Road
 	LICENSE D
 	ID 353
-4221W1 Formula 1600 Rookie Series - Fixed
+4221W1 Formula 1600 Rookie Series - Fixed : Road
 	LICENSE R
 	ID 519
-4224W1 Formula 1600 Trophy
+4224W1 Formula 1600 Trophy : Road
 	LICENSE D
 	ID 520
 0 Formula 3.5 Championship : Formula B - ButtKicker Formula Renault 3.5 Series
@@ -389,7 +389,7 @@
 	ID 465
 0 Pro 2 and Pro 2 Lite Off Road Racing Series
 0 Pro 2 Lite Truck Championship
-0 Pro 2 Off Road Racing Series : DirtRoad
+4219W1 Pro 2 Off Road Racing Series : DirtRoad
 4217W1 Pro 2 Off-Road Racing Series - Fixed : DirtRoad
 	LICENSE C
 	ID 464
