@@ -148,7 +148,11 @@
 	LICENSE D
 	ID 353
 4221W1 Formula 1600 Rookie Series - Fixed
+	LICENSE R
+	ID 519
 4224W1 Formula 1600 Trophy
+	LICENSE D
+	ID 520
 0 Formula 3.5 Championship : Formula B - ButtKicker Formula Renault 3.5 Series
 4182W1 Formula A - Grand Prix Series : Road
 	LICENSE A
