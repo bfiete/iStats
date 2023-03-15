@@ -212,7 +212,7 @@
 0 GT Endurance VRS Series : Road
 	LICENSE C
 	ID 237
-4166W1 GT Heusinkveld Challenge : Road
+0 GT Heusinkveld Challenge : Road
 	LICENSE C
 	ID 432
 4174W1 GT Sprint VRS Series : Road
@@ -228,7 +228,9 @@
 	LICENSE D
 	ID 491
 0 GTE Endurance Series : Road
-0 Heusinkveld GT Challenge : Road
+4166W1 Heusinkveld GT Challenge : Road
+	LICENSE C
+	ID 521
 0 IMSA 90 Minutes of Sebring : Road
 0 IMSA Endurance Series : Road
 	LICENSE B
