@@ -212,7 +212,7 @@
 0 GT Endurance VRS Series : Road
 	LICENSE C
 	ID 237
-0 GT Heusinkveld Challenge : Road
+4166W1 GT Heusinkveld Challenge : Road
 	LICENSE C
 	ID 432
 4174W1 GT Sprint VRS Series : Road
