@@ -199,6 +199,8 @@
 	LICENSE R
 	ID 139
 4126W1 GR Buttkicker Cup - Fixed
+	LICENSE D
+	ID 514
 4167W1 Grand Prix Legends : Road
 	LICENSE C
 	ID gplegends
@@ -275,8 +277,6 @@
 0 iRacing Formula iR-04 Ricmotech Challenge - Fixed : Formula D - Ricmotech iR-04 Challenge - Fixed
 0 iRacing Formula Renault 2.0 : Formula Renault 2.0 Apex Academy Series
 0 iRacing GR Cup - Fixed : Road
-	LICENSE D
-	ID 514
 0 iRacing Grand Prix Series : Grand Prix Series
 0 iRacing Grand Prix Tour
 0 iRacing Grand Prix Tour - Fixed
