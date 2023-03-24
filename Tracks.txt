@@ -340,7 +340,11 @@
 449 Motorsport Arena Oschersleben - Grand Prix
 451 Rudskogen Motorsenter
 452 Lucas Oil Raceway - Oval
+453 Indianapolis Motor Speedway - Open Wheel Oval
 462 Lincoln Speedway
 463 Circuit de Nevers Magny-Cours - Grand Prix
 465 Virginia International Raceway - Full Course
+467 Virginia International Raceway - North
+470 Daytona International Speedway - Dirt Road Long
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
+473 Circuito de Jerez - Ángel Nieto - Grand Prix
