@@ -248,17 +248,6 @@
 0 IMSA Sportscar Championship : IMSA Hagerty iRacing Series
 0 IMSA Triple Crown
 0 Indy Pro 2000 Championship : US Open Wheel C - Indy Pro 2000 Series
-0 IndyCar iRacing Series : US Open Wheel B - Indycar Series
-0 IndyCar Series - Fixed : US Open Wheel C - Indycar Series - Fixed
-0 IndyCar Series - Open : Oval
-	LICENSE C
-	ID 165
-0 IndyCar Series - Oval - Fixed : Oval
-	LICENSE C
-	ID 165
-0 IndyCar Series - Road : Road
-	LICENSE C
-	ID 374
 0 iRacing Advanced Legends Cup : Rookie Legends Cup
 0 iRacing ARCA Menards Series : ARCA Menards Series
 0 iRacing Chili Bowl Nationals
@@ -510,17 +499,15 @@
 	ID 430
 0 Trak Racer Dallara Dash : Dallara Dash
 0 Turn Racing Touring Car Challenge : Touring Car Turn Racing Challenge
-4157W1 US Open Wheel B - Dallara IR-18
-0 US Open Wheel B - Indycar Series : Road
+4157W1 US Open Wheel B - Dallara IR-18 : Road
 	LICENSE B
 	ID 133
-4156W1 US Open Wheel C - Dallara IR-18 - Fixed
+4156W1 US Open Wheel C - Dallara IR-18 - Fixed : Oval
+	LICENSE C
+	ID 165
 4161W1 US Open Wheel C - Indy Pro 2000 Series : Road
 	LICENSE C
 	ID 414
-0 US Open Wheel C - Indycar Series - Fixed : Oval
-	LICENSE C
-	ID 165
 4125W1 US Open Wheel D - USF 2000 Series - Fixed : Road
 	LICENSE D
 	ID 443
