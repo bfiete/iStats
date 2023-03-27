@@ -192,7 +192,9 @@
 4123W2 Formula Vee SIMAGIC Series : Road
 	LICENSE R
 	ID 455
-4249W2 Gen 4 Cup - Fixed
+4249W2 Gen 4 Cup - Fixed : Oval
+	LICENSE C
+	ID 524
 0 Global Endurance Pure Driving School Series
 4144W2 Global Fanatec Challenge : Road
 	LICENSE D
