@@ -155,7 +155,6 @@
 4224W2 Formula 1600 Trophy : Road
 	LICENSE D
 	ID 520
-0 Formula 3.5 Championship : Formula B - ButtKicker Formula Renault 3.5 Series
 4182W2 Formula A - Grand Prix Series : Road
 	LICENSE A
 	ID 260
@@ -164,10 +163,9 @@
 	ID 484
 0 Formula A - Grand Prix Tour
 0 Formula A - Grand Prix Tour - Fixed
-0 Formula B - ButtKicker Formula Renault 3.5 Series : Road
+4179W2 Formula B - Formula Renault 3.5 Series : Road
 	LICENSE B
 	ID 359
-4179W2 Formula B - Formula Renault 3.5 Series
 4159W2 Formula C - DOF Reality Dallara F3 Series : Road
 	LICENSE C
 	ID 431
