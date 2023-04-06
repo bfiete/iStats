@@ -321,10 +321,9 @@
 	ID 164
 0 NASCAR iRacing Class A : NASCAR Class A
 0 NASCAR iRacing Class A Fixed : NASCAR Class A Fixed
-4115W6 NASCAR iRacing Class B : Oval
+4115W2 NASCAR iRacing Class B : Oval
 	LICENSE B
 	ID 62
-0 NASCAR iRacing Class B Fixed : NASCAR Class B Fixed
 4116W6 NASCAR iRacing Class C : Oval
 	LICENSE C
 	ID 47
