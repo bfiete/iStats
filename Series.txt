@@ -159,7 +159,7 @@
 	LICENSE A
 	ID 260
 4183W2 Formula A - Grand Prix Series - Fixed : Road
-	LICENSE C
+	LICENSE A
 	ID 484
 0 Formula A - Grand Prix Tour
 0 Formula A - Grand Prix Tour - Fixed
