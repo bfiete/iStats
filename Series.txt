@@ -214,7 +214,9 @@
 0 Grand Prix Series Sprint - Fixed : Road
 	LICENSE A
 	ID 260
-4166W6 GT Challenge
+4166W6 GT Challenge : Road
+	LICENSE C
+	ID 521
 4175W6 GT Endurance VRS Series : Road
 	LICENSE C
 	ID 237
@@ -234,9 +236,7 @@
 	LICENSE D
 	ID 491
 0 GTE Endurance Series : Road
-0 Heusinkveld GT Challenge : Road
-	LICENSE C
-	ID 521
+0 Heusinkveld GT Challenge : GT Challenge
 0 IMSA 90 Minutes of Sebring : Road
 0 IMSA Endurance Series : Road
 	LICENSE B
@@ -245,10 +245,10 @@
 4171W6 IMSA iRacing Series : Road
 	LICENSE B
 	ID 447
-0 IMSA Michelin Pilot Challenge : Road
+0 IMSA Michelin Pilot Challenge : IMSA Michelin Pilot Challenge Series
+4148W3 IMSA Michelin Pilot Challenge Series : Road
 	LICENSE C
 	ID 386
-4148W3 IMSA Michelin Pilot Challenge Series
 0 IMSA Sportscar Championship : IMSA Hagerty iRacing Series
 0 IMSA Triple Crown
 0 Indy Pro 2000 Championship : US Open Wheel C - Indy Pro 2000 Series
