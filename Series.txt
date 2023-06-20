@@ -20,7 +20,7 @@
 0 AMSOIL USAC Sprint Car : DirtOval
 	LICENSE B
 	ID 309
-4345W2 AMSOIL USAC Sprint Car - Fixed
+4345W2 AMSOIL USAC Sprint Car - Fixed : AMSOIL USAC Sprint Car
 0 Apex Racing Academy F3 Championship : F3 Championship
 4278W2 ARCA Menards Series : Oval
 	LICENSE D
@@ -144,7 +144,7 @@
 0 F3 Vertagear Championship - Fixed : Road
 	LICENSE C
 	ID 456
-4266W2 Falken Tyre Sports Car Challenge
+4266W2 Falken Tyre Sports Car Challenge : GT4 Falken Tyre Challenge
 0 Fanatec DIRTcar 305 Sprint Car Series : DIRTcar 305 Sprint Car Fanatec Series
 0 Fanatec Global Challenge : Global Fanatec Challenge
 0 Fanatec Global Mazda MX-5 Cup : Global Mazda MX-5 Fanatec Cup
@@ -379,7 +379,7 @@
 	ID 286
 0 PickUp Cup : Oval
 	LICENSE R
-	ID 259	
+	ID 259
 4301W2 Porsche Cup : Road
 	LICENSE C
 	ID 299
