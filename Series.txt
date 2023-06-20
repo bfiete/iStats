@@ -571,3 +571,6 @@
 4343W2 World of Outlaws Sprint Car Series - Fixed : DirtOval
 	LICENSE B
 	ID 458
+4266W1 Falken Tyre Sports Car Challenge : Road
+	LICENSE C
+	ID 525
