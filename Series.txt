@@ -154,8 +154,12 @@
 4269W2 Ferrari GT3 Challenge - Fixed : Road
 	LICENSE D
 	ID 353
-4271W2 FIA Formula 4 Challenge : Formula D - Ricmotech iR-04 Challenge
-4270W2 FIA Formula 4 Challenge - Fixed : Formula D - Ricmotech iR-04 Challenge - Fixed
+4271W2 FIA Formula 4 Challenge : Road
+	LICENSE D
+	ID 497
+4270W2 FIA Formula 4 Challenge - Fixed : Road
+	LICENSE D
+	ID 498
 4258W2 Formula 1600 Rookie Series - Fixed : Road
 	LICENSE R
 	ID 519
@@ -181,12 +185,8 @@
 4297W2 Formula C - Moza Racing Dallara F3 Series- Fixed : Road
 	LICENSE C
 	ID 456
-0 Formula D - Ricmotech iR-04 Challenge : Road
-	LICENSE D
-	ID 497
-0 Formula D - Ricmotech iR-04 Challenge - Fixed : Road
-	LICENSE D
-	ID 498
+0 Formula D - Ricmotech iR-04 Challenge : FIA Formula 4 Challenge
+0 Formula D - Ricmotech iR-04 Challenge - Fixed : FIA Formula 4 Challenge - Fixed
 0 Formula Renault 2.0 : Formula Renault 2.0 ButtKicker Series
 0 Formula Renault 2.0 Apex Academy Series : Formula Renault 2.0 Apex Racing Academy Series
 0 Formula Renault 2.0 Apex Racing Academy Series : Formula Renault 2.0
