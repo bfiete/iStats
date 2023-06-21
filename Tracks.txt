@@ -352,5 +352,6 @@
 473 Circuito de Jerez - Ángel Nieto - Grand Prix
 474 Circuito de Jerez - Ángel Nieto - Grand Prix
 475 Motorland Aragón - Grand Prix
+480 Motorland Aragón - Outer
 481 Willow Springs International Raceway - Big Willow
 483 Chicago Street Course - Prototype
