@@ -351,6 +351,6 @@
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
 473 Circuito de Jerez - Ángel Nieto - Grand Prix
 474 Circuito de Jerez - Ángel Nieto - Grand Prix
+475 Motorland Aragón - Grand Prix
 481 Willow Springs International Raceway - Big Willow
 483 Chicago Street Course - Prototype
-485 Motorland Aragón - Grand Prix
