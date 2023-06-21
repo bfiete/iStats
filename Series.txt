@@ -50,7 +50,7 @@
 4310W2 Classic Lotus Grand Prix : Road
 	LICENSE B
 	ID 65
-4358W2 Clio Ricmotech Cup - Fixed
+4358W2 Clio Ricmotech Cup - Fixed : Road
 	LICENSE D
 	ID 518
 0 Coliseum Clash
