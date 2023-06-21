@@ -50,7 +50,7 @@
 4310W2 Classic Lotus Grand Prix : Road
 	LICENSE B
 	ID 65
-4358 Clio Ricmotech Cup - Fixed
+4358W2 Clio Ricmotech Cup - Fixed
 	LICENSE D
 	ID 518
 0 Coliseum Clash
@@ -269,7 +269,7 @@
 0 iRacing Advanced Legends Cup : Rookie Legends Cup
 0 iRacing ARCA Menards Series : ARCA Menards Series
 0 iRacing Chili Bowl Nationals
-0 iRacing Clio Cup - Fixed : Road
+0 iRacing Clio Cup - Fixed : Clio Ricmotech Cup - Fixed
 0 iRacing Dirt Legends Cup : Dirt Legends Cup
 0 iRacing Dirt Midget Cup : Dirt Midget Cup
 0 iRacing Endurance Series : Road
