@@ -154,8 +154,8 @@
 4269W2 Ferrari GT3 Challenge - Fixed : Road
 	LICENSE D
 	ID 353
-4271W2 FIA Formula 4 Challenge
-4270W2 FIA Formula 4 Challenge - Fixed
+4271W2 FIA Formula 4 Challenge : Formula D - Ricmotech iR-04 Challenge
+4270W2 FIA Formula 4 Challenge - Fixed : Formula D - Ricmotech iR-04 Challenge - Fixed
 4258W2 Formula 1600 Rookie Series - Fixed : Road
 	LICENSE R
 	ID 519
