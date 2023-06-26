@@ -317,7 +317,7 @@
 	ID 457
 0 LMP2 Prototype Challenge - Fixed : LMP2 Prototype  Challenge – Fixed
 0 LMP2 Prototype Ricmotech Challenge - Fixed : LMP2 Prototype  Challenge – Fixed
-4359W2 LMP3 Turn Racing Trophy - Fixed
+4359W2 LMP3 Turn Racing Trophy - Fixed : Road
 4273W2 Mission R Challenge - Fixed : Road
 	LICENSE D
 	ID 504
