@@ -2927,9 +2927,11 @@ namespace iStats
 		{
 			RacingSeries racingSeries = null;
 
+			int lineNum = 0;
 			var seriesText = File.ReadAllText("Series.txt", .. scope .());
 			for (var line in seriesText.Split('\n'))
 			{
+				lineNum++;
 				int32 seriesId = int32.Parse(line).GetValueOrDefault();
 				int32 seriesWeek = -1;
 				StringView seriesName = default;
@@ -2943,9 +2945,16 @@ namespace iStats
 					switch (itr.GetNext().Value)
 					{
 					case "LICENSE":
-						racingSeries.mLicense = Enum.Parse<RacingLicense>(itr.GetNext().Value).Value;
+						StringView licenseStr = itr.GetNext().GetValueOrDefault();
+						switch (Enum.Parse<RacingLicense>(licenseStr))
+						{
+						case .Ok(let val):
+							racingSeries.mLicense = val;
+						default:
+							Console.WriteLine($"*** Invalid license '{licenseStr}' on line {lineNum}'");
+						}
 					case "ID":
-						racingSeries.mID = new String(itr.GetNext().Value);
+						racingSeries.mID = new String(itr.GetNext().GetValueOrDefault());
 					}
 
 					continue;
