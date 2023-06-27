@@ -2931,6 +2931,8 @@ namespace iStats
 			var seriesText = File.ReadAllText("Series.txt", .. scope .());
 			for (var line in seriesText.Split('\n'))
 			{
+				line.Trim();
+
 				lineNum++;
 				int32 seriesId = int32.Parse(line).GetValueOrDefault();
 				int32 seriesWeek = -1;
