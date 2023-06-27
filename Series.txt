@@ -317,7 +317,9 @@
 	ID 457
 0 LMP2 Prototype Challenge - Fixed : LMP2 Prototype  Challenge – Fixed
 0 LMP2 Prototype Ricmotech Challenge - Fixed : LMP2 Prototype  Challenge – Fixed
-4359W2 LMP3 Turn Racing Trophy - Fixed
+4359W2 LMP3 Turn Racing Trophy - Fixed : Road
+	LICENSE C
+	ID 525
 4273W2 Mission R Challenge - Fixed : Road
 	LICENSE D
 	ID 504
@@ -571,6 +573,6 @@
 4343W2 World of Outlaws Sprint Car Series - Fixed : DirtOval
 	LICENSE B
 	ID 458
-4266W1 Falken Tyre Sports Car Challenge : Road
+4266W2 Falken Tyre Sports Car Challenge : Road
 	LICENSE C
-	ID 525
+	ID 502
