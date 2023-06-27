@@ -350,7 +350,7 @@
 471 Daytona International Speedway - Dirt Road Short
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
 473 Circuito de Jerez - Ángel Nieto - Grand Prix
-474 Circuito de Jerez - Ángel Nieto - Grand Prix
+474 Circuito de Jerez - Ángel Nieto - Moto
 475 Motorland Aragón - Grand Prix
 480 Motorland Aragón - Outer
 481 Willow Springs International Raceway - Big Willow
