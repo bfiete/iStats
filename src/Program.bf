@@ -2931,7 +2931,7 @@ namespace iStats
 			var seriesText = File.ReadAllText("Series.txt", .. scope .());
 			for (var line in seriesText.Split('\n'))
 			{
-				line.Trim();
+				line.TrimEnd();
 
 				lineNum++;
 				int32 seriesId = int32.Parse(line).GetValueOrDefault();
@@ -3074,6 +3074,8 @@ namespace iStats
 
 		public static int Main(String[] args)
 		{
+			
+
 			/*{
 				String str = scope .();
 				File.ReadAllText("c:\\temp\\subsession.json", str);
@@ -3116,6 +3118,9 @@ namespace iStats
 			sw.Start();
 
 			Program pg = scope .();
+
+			//TODO: Remove
+			pg.ReadSeries();
 
 			bool doAnalyzeLoop = false;
 			for (var arg in args)
