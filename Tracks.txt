@@ -346,6 +346,7 @@
 465 Virginia International Raceway - Full Course
 466 Virginia International Raceway - Grand Course
 467 Virginia International Raceway - North
+468 Virginia International Raceway - South
 470 Daytona International Speedway - Dirt Road Long
 471 Daytona International Speedway - Dirt Road Short
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
