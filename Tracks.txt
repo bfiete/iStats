@@ -1,14 +1,66 @@
+1 [Legacy] Lime Rock Park - 2008 - Full Course
+2 [Retired] Virginia International Raceway - [Retired] Full Course
+3 [Retired] Virginia International Raceway - [Retired] Patriot
+4 [Retired] Virginia International Raceway - [Retired] North
+5 [Retired] Virginia International Raceway - [Retired] Grand West
+6 [Retired] Virginia International Raceway - [Retired] Grand East
+7 [Retired] Virginia International Raceway - [Retired] South
+8 Summit Point Raceway - Jefferson Circuit
+9 Summit Point Raceway - Summit Point Raceway
+11 Stafford Motor Speedway - Full Course
+12 Oxford Plains Speedway
+14 South Boston Speedway
+15 Concord Speedway
+16 USA International Speedway - Asphalt
+17 Lanier National Speedway - Asphalt
+18 Road America - Full Course
+19 Irwindale Speedway - Inner
+20 Homestead Miami Speedway - Oval
+21 Homestead Miami Speedway - Road Course A
+22 Homestead Miami Speedway - Road Course B
+23 Irwindale Speedway - Outer
+24 Summit Point Raceway - Short
+26 Daytona International Speedway - Road Course - 2008
+27 Daytona International Speedway - Oval - 2008
+28 Daytona International Speedway - Moto - 2008
+29 Daytona International Speedway - Short - 2008
+30 Irwindale Speedway - Outer - Inner
+31 Richmond Raceway
+33 Martinsville Speedway
+34 [Legacy] Lime Rock Park - 2008 - Chicane
+37 [Legacy] Charlotte Motor Speedway - 2008 - Road Course
+38 [Legacy] Charlotte Motor Speedway - 2008 - Infield Road Course
+39 [Legacy] Charlotte Motor Speedway - 2008 - Legends Oval
+40 [Legacy] Charlotte Motor Speedway - 2008 - Oval
+41 [Legacy] Silverstone Circuit - 2008 - Grand Prix
+42 [Legacy] Silverstone Circuit - 2008 - Historical Grand Prix
+43 [Legacy] Silverstone Circuit - 2008 - International
+44 [Legacy] Silverstone Circuit - 2008 - National
+45 [Legacy] Silverstone Circuit - 2008 - Southern
+46 Barber Motorsports Park - Full Course
+47 WeatherTech Raceway at Laguna Seca - Full Course
+48 Sonoma Raceway - Cup Historic
+49 Sonoma Raceway - Open Wheel pre-2008
+50 Road America - Bend
+51 Atlanta Motor Speedway - Road - 2008
+52 Atlanta Motor Speedway - Legends Oval - 2008
+53 Atlanta Motor Speedway - Oval - 2008
+94 The Milwaukee Mile
+95 Sebring International Raceway - International
+96 Sebring International Raceway - Modified
+97 Sebring International Raceway - Club
+98 Sonoma Raceway - Cup
+99 Barber Motorsports Park - Short A
 100 Barber Motorsports Park - Short B
 101 Bristol Motor Speedway - Dual Pit Roads
-102 Sonoma Raceway - IndyCar 2008-2011
+102 Sonoma Raceway - Open Wheel 2008-2011
 103 Las Vegas Motor Speedway - Oval
 104 [Legacy] Phoenix Raceway - 2008 - Oval
 105 [Legacy] Phoenix Raceway - 2008 - Road Course
-106 Watkins Glen International - Cup
-107 Watkins Glen International - Boot
-108 Watkins Glen International - Classic Boot
-109 Watkins Glen International - Classic
-11 Stafford Motor Speedway - Full Course
+106 [Retired] Watkins Glen International - [Retired] Cup
+107 [Retired] Watkins Glen International - [Retired] Boot
+108 [Retired] Watkins Glen International - [Retired] Classic Boot
+109 [Retired] Watkins Glen International - [Retired] Classic
 110 Las Vegas Motor Speedway - Legends Oval
 111 Las Vegas Motor Speedway - Road Course Long
 112 Las Vegas Motor Speedway - Road Course Short
@@ -19,7 +71,6 @@
 117 [Legacy] Texas Motor Speedway - 2009 - Road Course Long
 118 [Legacy] Texas Motor Speedway - 2009 - Road Course Short A
 119 [Legacy] Texas Motor Speedway - 2009 - Road Course Short B
-12 Oxford Plains Speedway
 120 [Legacy] Texas Motor Speedway - 2009 - Legends Oval
 121 [Legacy] Texas Motor Speedway - 2009 - Oval
 122 [Legacy] Texas Motor Speedway - 2009 - Road Course Combined
@@ -32,27 +83,25 @@
 130 New Hampshire Motor Speedway - Road Course with North Oval
 131 New Hampshire Motor Speedway - Oval
 132 New Hampshire Motor Speedway - Road Course with South Oval
-133 Indianapolis Motor Speedway - Oval
-134 Indianapolis Motor Speedway - Road Course
-135 Indianapolis Motor Speedway - Bike
+133 Indianapolis Motor Speedway - NASCAR Oval - 2009
+134 Indianapolis Motor Speedway - Road Course - 2009
+135 Indianapolis Motor Speedway - Bike - 2009
 136 [Legacy] Pocono Raceway - 2009 - Oval
 137 [Legacy] Pocono Raceway - 2009 - East
 138 [Legacy] Pocono Raceway - 2009 - South
 139 [Legacy] Pocono Raceway - 2009 - North
-14 South Boston Speedway
 140 [Legacy] Pocono Raceway - 2009 - International
-141 Virginia International Raceway - Patriot Reverse
+141 [Retired] Virginia International Raceway - [Retired] Patriot Reverse
 142 Summit Point Raceway - Jefferson Reverse
 143 Centripetal Circuit
 144 Canadian Tire Motorsports Park
 145 Brands Hatch Circuit - Grand Prix
 146 Brands Hatch Circuit - Indy
-147 Circuit Park Zandvoort - Chicane
-148 Circuit Park Zandvoort - Club
-149 Circuit Park Zandvoort - Grand Prix
-15 Concord Speedway
-150 Circuit Park Zandvoort - National
-151 Circuit Park Zandvoort - Oostelijk
+147 Circuit Park Zandvoort - Chicane - 2009
+148 Circuit Park Zandvoort - Club - 2009
+149 Circuit Park Zandvoort - Grand Prix - 2009
+150 Circuit Park Zandvoort - National - 2009
+151 Circuit Park Zandvoort - Oostelijk - 2009
 152 Phillip Island Circuit
 153 Mid-Ohio Sports Car Course - Full Course
 154 Mid-Ohio Sports Car Course - Chicane
@@ -61,10 +110,9 @@
 157 Mid-Ohio Sports Car Course - Alt Oval
 158 WeatherTech Raceway at Laguna Seca - School
 159 Summit Point Raceway - School
-16 USA International Speedway - Asphalt
 160 [Legacy] Lime Rock Park - 2008 - School
 161 Thompson Speedway Motorsports Park - Oval
-162 Dover International Speedway
+162 Dover Motor Speedway
 163 Circuit de Spa-Francorchamps - Grand Prix Pits
 164 Circuit de Spa-Francorchamps - Classic Pits
 165 Circuit de Spa-Francorchamps - Endurance
@@ -72,7 +120,6 @@
 167 Okayama International Circuit - Short
 168 Suzuka International Racing Course - Grand Prix
 169 Iowa Speedway - Oval
-17 Lanier National Speedway - Asphalt
 170 Iowa Speedway - Road Course
 171 Iowa Speedway - Legends
 172 Iowa Speedway - Infield Legends
@@ -80,9 +127,8 @@
 174 Suzuka International Racing Course - East
 175 Suzuka International Racing Course - West
 176 Suzuka International Racing Course - West w/chicane
-178 Indianapolis Motor Speedway - IndyCar Oval
+178 Indianapolis Motor Speedway - Open Wheel Oval - 2009
 179 Long Beach Street Circuit
-18 Road America - Full Course
 180 Oulton Park Circuit - International
 181 Oulton Park Circuit - Fosters
 182 Oulton Park Circuit - Island
@@ -93,7 +139,6 @@
 187 Oulton Park Circuit - Island Historic
 188 [Legacy] Kentucky Speedway - 2011 - Oval
 189 [Legacy] Kentucky Speedway - 2011 - Legends
-19 Irwindale Speedway - Inner
 190 New Smyrna Speedway
 191 Daytona International Speedway - Oval
 192 Daytona International Speedway - Road Course
@@ -104,8 +149,6 @@
 197 Twin Ring Motegi - West
 198 Twin Ring Motegi - Oval
 199 Circuit Zolder - Grand Prix
-2 Virginia International Raceway - Full Course
-20 Homestead Miami Speedway - Oval
 200 Circuit Zolder - Alternate
 201 Langley Speedway
 202 Oran Park Raceway - Grand Prix
@@ -116,18 +159,16 @@
 207 Oran Park Raceway - North
 208 Oran Park Raceway - South
 209 Oran Park Raceway - North A
-21 Homestead Miami Speedway - Road Course A
 210 Oran Park Raceway - North B
 211 Oran Park Raceway - Moto
-212 Aut√≥dromo Jos√© Carlos Pace - Grand Prix
-213 Aut√≥dromo Jos√© Carlos Pace - Moto
+212 AutÛdromo JosÈ Carlos Pace - Grand Prix
+213 AutÛdromo JosÈ Carlos Pace - Moto
 214 Kansas Speedway - Oval
 215 Kansas Speedway - Road Course
 216 Kansas Speedway - Infield Road Course
 217 Irwindale Speedway - Figure Eight
 218 Circuit Gilles Villeneuve
 219 Mount Panorama Circuit
-22 Homestead Miami Speedway - Road Course B
 220 New Jersey Motorsports Park - Thunderbolt
 221 New Jersey Motorsports Park - Thunderbolt w/both chicanes
 222 New Hampshire Motor Speedway - Legends
@@ -138,18 +179,16 @@
 227 Auto Club Speedway - Moto
 228 Auto Club Speedway - Interior
 229 Circuit of the Americas - Grand Prix
-23 Irwindale Speedway - Outer
 230 Circuit of the Americas - East
 231 Circuit of the Americas - West
-232 Lucas Oil Raceway - Oval
+232 Lucas Oil Raceway (IRP) - Oval
 233 Donington Park Racing Circuit - Grand Prix
 234 Donington Park Racing Circuit - National
-235 Phoenix Raceway - Oval
-236 Phoenix Raceway - Oval w/open dogleg
-237 World Wide Technology Raceway - Oval
-238 World Wide Technology Raceway - Road Course
+235 [Retired] Phoenix Raceway - [Retired] Oval
+236 [Retired] Phoenix Raceway - [Retired] Oval w/open dogleg
+237 World Wide Technology Raceway (Gateway) - Oval
+238 World Wide Technology Raceway (Gateway) - Road Course
 239 Autodromo Nazionale Monza - Grand Prix
-24 Summit Point Raceway - Short
 240 Autodromo Nazionale Monza - Combined without chicanes
 241 Autodromo Nazionale Monza - Junior
 242 Autodromo Nazionale Monza - GP without chicanes
@@ -159,25 +198,23 @@
 246 Autodromo Nazionale Monza - Combined without first chicane
 247 Autodromo Nazionale Monza - Combined
 248 Five Flags Speedway
-249 N√ºrburgring Nordschleife - Industriefahrten
-250 N√ºrburgring Grand-Prix-Strecke - Grand Prix
-252 N√ºrburgring Combined - Gesamtstrecke 24h
-253 N√ºrburgring Nordschleife - Touristenfahrten
-255 N√ºrburgring Grand-Prix-Strecke - BES/WEC
+249 N¸rburgring Nordschleife - Industriefahrten
+250 N¸rburgring Grand-Prix-Strecke - Grand Prix
+252 N¸rburgring Combined - Gesamtstrecke 24h
+253 N¸rburgring Nordschleife - Touristenfahrten
+255 N¸rburgring Grand-Prix-Strecke - BES/WEC
 256 Southern National Motorsports Park
-257 N√ºrburgring Grand-Prix-Strecke - Grand Prix w/out Arena
-259 N√ºrburgring Grand-Prix-Strecke - Sprintstrecke
-26 [Legacy] Daytona International Speedway - 2008 - Road Course
-260 N√ºrburgring Grand-Prix-Strecke - Kurzanbindung w/out Arena
-261 N√ºrburgring Grand-Prix-Strecke - M√ºllenbachschleife
-262 N√ºrburgring Combined - Gesamtstrecke VLN
-263 N√ºrburgring Combined - Gesamtstrecke Short w/out Arena
-264 N√ºrburgring Combined - Gesamtstrecke Long
+257 N¸rburgring Grand-Prix-Strecke - Grand Prix w/out Arena
+259 N¸rburgring Grand-Prix-Strecke - Sprintstrecke
+260 N¸rburgring Grand-Prix-Strecke - Kurzanbindung w/out Arena
+261 N¸rburgring Grand-Prix-Strecke - M¸llenbachschleife
+262 N¸rburgring Combined - Gesamtstrecke VLN
+263 N¸rburgring Combined - Gesamtstrecke Short w/out Arena
+264 N¸rburgring Combined - Gesamtstrecke Long
 266 Autodromo Internazionale Enzo e Dino Ferrari - Grand Prix
 267 Autodromo Internazionale Enzo e Dino Ferrari - Moto
 268 Circuit des 24 Heures du Mans - 24 Heures du Mans
 269 Circuit des 24 Heures du Mans - Historic
-27 [Legacy] Daytona International Speedway - 2008 - Oval
 271 The Bullring
 273 Eldora Speedway
 274 Williams Grove Speedway
@@ -185,25 +222,20 @@
 276 Michigan International Speedway
 277 Pocono Raceway
 279 Volusia Speedway Park
-28 [Legacy] Daytona International Speedway - 2008 - Moto
 286 Myrtle Beach Speedway
-287 Bristol Motor Speedway - Dirt
+287 Bristol Motor Speedway - Dirt - 2021
 288 Lanier National Speedway - Dirt
-29 [Legacy] Daytona International Speedway - 2008 - Short
 290 Brands Hatch Circuit - Rallycross
-293 [Legacy] Daytona International Speedway - 2008 - Rallycross Long
+293 Daytona Rallycross and Dirt Road - Rallycross Long
 295 Iowa Speedway - Rallycross
-296 [Legacy] Daytona International Speedway - 2008 - Rallycross Short
+296 Daytona Rallycross and Dirt Road - Rallycross Short
 297 Snetterton Circuit - 300
 298 Snetterton Circuit - 200
 299 Snetterton Circuit - 100
-3 Virginia International Raceway - Patriot
-30 Irwindale Speedway - Outer - Inner
 303 Limaland Motorsports Park
-304 Lucas Oil Raceway - Rallycross
+304 Lucas Oil Raceway (IRP) - Rallycross
 305 Knoxville Raceway
 306 [Legacy] Phoenix Raceway - 2008 - Rallycross
-31 Richmond Raceway
 312 Sonoma Raceway - Rallycross
 314 The Dirt Track at Charlotte
 319 Detroit Grand Prix at Belle Isle - Belle Isle
@@ -216,7 +248,6 @@
 327 Tsukuba Circuit - 1000 Full
 328 Tsukuba Circuit - 1000 Outer
 329 Tsukuba Circuit - 1000 Chicane
-33 Martinsville Speedway
 330 Charlotte Motor Speedway - Roval - 2018
 331 Chili Bowl
 332 Wild West Motorsports Park
@@ -227,7 +258,6 @@
 337 Charlotte Motor Speedway - Legends RC Medium - 2018
 338 Charlotte Motor Speedway - Legends RC Short - 2018
 339 Charlotte Motor Speedway - Oval - 2018
-34 [Legacy] Lime Rock Park - 2008 - Chicane
 340 Charlotte Motor Speedway - Roval Long - 2018
 341 Silverstone Circuit - Grand Prix
 342 Silverstone Circuit - International
@@ -245,82 +275,55 @@
 354 Lime Rock Park - Chicanes
 355 Lime Rock Park - West Bend Chicane
 357 Texas Motor Speedway - Oval
-358 L&#xE5;nkebanen (Hell RX) - Hell Rallycross
-359 L&#xE5;nkebanen (Hell RX) - Club
-360 L&#xE5;nkebanen (Hell RX) - Rallycross Short
-361 L&#xE5;nkebanen (Hell RX) - Road Short
-362 Homestead Miami Speedway - IndyCar Oval
-363 L&#xE5;nkebanen (Hell RX) - Road Long
+358 LÂnkebanen (Hell RX) - Hell Rallycross
+359 LÂnkebanen (Hell RX) - Club
+360 LÂnkebanen (Hell RX) - Rallycross Short
+361 LÂnkebanen (Hell RX) - Road Short
+362 Homestead Miami Speedway - Open Wheel Oval
+363 LÂnkebanen (Hell RX) - Road Long
 364 Texas Motor Speedway - Legends Oval
 365 Bristol Motor Speedway - Single Pit Roads
 366 North Wilkesboro Speedway - 1987
-37 [Legacy] Charlotte Motor Speedway - 2008 - Road Course
 371 Kentucky Speedway - Oval
 373 Weedsport Speedway
 374 Nashville Fairgrounds Speedway - Oval
-38 [Legacy] Charlotte Motor Speedway - 2008 - Infield Road Course
 380 Nashville Fairgrounds Speedway - Mini
 381 Daytona International Speedway - NASCAR Road
 382 Crandon International Raceway - Full
 383 Crandon International Raceway - Short
-384 IRacing Superspeedway
+384 iRacing Superspeedway
 385 Charlotte Motor Speedway - Rallycross
-386 Circuit de Barcelona-Catalunya - Rallycross
+386 Circuit de Barcelona Catalunya - Rallycross
 387 Cedar Lake Speedway
 388 Irwindale Speedway - Figure Eight Jump
-39 [Legacy] Charlotte Motor Speedway - 2008 - Legends Oval
-390 Hockenheimring Baden-W√ºrttemberg - Grand Prix
-391 Hockenheimring Baden-W√ºrttemberg - National A
-392 Hockenheimring Baden-W√ºrttemberg - National B
-393 Hockenheimring Baden-W√ºrttemberg - Short A
-394 Hockenheimring Baden-W√ºrttemberg - Short B
-395 Hockenheimring Baden-W√ºrttemberg - Outer
+390 Hockenheimring Baden-W¸rttemberg - Grand Prix
+391 Hockenheimring Baden-W¸rttemberg - National A
+392 Hockenheimring Baden-W¸rttemberg - National B
+393 Hockenheimring Baden-W¸rttemberg - Short A
+394 Hockenheimring Baden-W¸rttemberg - Short B
+395 Hockenheimring Baden-W¸rttemberg - Outer
 396 Bark River International Raceway
-397 Sonoma Raceway - IndyCar 2012-2018
-4 Virginia International Raceway - North
-40 [Legacy] Charlotte Motor Speedway - 2008 - Oval
+397 Sonoma Raceway - Open Wheel 2012-2018
+398 Mt. Washington Auto Road - Hillclimb
+399 Mt. Washington Auto Road - Descent
 400 Nashville Superspeedway
 403 Red Bull Ring - Grand Prix
 404 Red Bull Ring - National
-405 Chicago Street Circuit
+405 Chicago Street Course - Prototype
 407 Red Bull Ring - North
-41 [Legacy] Silverstone Circuit - 2008 - Grand Prix
-42 [Legacy] Silverstone Circuit - 2008 - Historical Grand Prix
-43 [Legacy] Silverstone Circuit - 2008 - International
-44 [Legacy] Silverstone Circuit - 2008 - National
-45 [Legacy] Silverstone Circuit - 2008 - Southern
-46 Barber Motorsports Park - Full Course
-47 WeatherTech Raceway at Laguna Seca - Full Course
-48 Sonoma Raceway - Cup Historic
-49 Sonoma Raceway - IndyCar pre-2008
-5 Virginia International Raceway - Grand West
-50 Road America - Bend
-51 Atlanta Motor Speedway - Road Course
-52 Atlanta Motor Speedway - Legends Oval
-53 Atlanta Motor Speedway - Oval
-6 Virginia International Raceway - Grand East
-7 Virginia International Raceway - South
-8 Summit Point Raceway - Jefferson Circuit
-9 Summit Point Raceway - Summit Point Raceway
-94 The Milwaukee Mile
-95 Sebring International Raceway - International
-96 Sebring International Raceway - Modified
-97 Sebring International Raceway - Club
-98 Sonoma Raceway - Cup
-99 Barber Motorsports Park - Short A
 413 Hungaroring
 414 Hickory Motor Speedway
 418 Phoenix Raceway - Oval
-419 Phoenix Raceway
+419 Phoenix Raceway - Oval w/open dogleg
 423 Knockhill Racing Circuit - International
 424 Knockhill Racing Circuit - International Reverse
 425 Knockhill Racing Circuit - National
 426 Knockhill Racing Circuit - National Reverse
 427 Knockhill Racing Circuit - Rallycross
-428 Hockenheimring Baden-W√ºrttemberg - Porsche Experience Center - East
-429 Hockenheimring Baden-W√ºrttemberg - Porsche Experience Center - Outer
-430 Hockenheimring Baden-W√ºrttemberg - Porsche Experience Center - West
-431 Hockenheimring Baden-W√ºrttemberg - Porsche Experience Center - Handling
+428 Hockenheimring Baden-W¸rttemberg - Porsche Experience Center - East
+429 Hockenheimring Baden-W¸rttemberg - Porsche Experience Center - Outer
+430 Hockenheimring Baden-W¸rttemberg - Porsche Experience Center - West
+431 Hockenheimring Baden-W¸rttemberg - Porsche Experience Center - Handling
 432 Watkins Glen International - Classic
 433 Watkins Glen International - Cup
 434 Watkins Glen International - Boot
@@ -332,27 +335,45 @@
 440 Winton Motor Raceway - Club Circuit
 442 Bristol Motor Speedway - Dirt
 443 Sandown International Motor Raceway
-444 Fuji Speedway - Grand Prix
-445 Fuji Speedway - No chicanes
+444 Fuji International Speedway - Grand Prix
+445 Fuji International Speedway - No Chicane
 446 Port Royal Speedway
 447 Atlanta Motor Speedway - Oval
 448 Indianapolis Motor Speedway - Road Course
 449 Motorsport Arena Oschersleben - Grand Prix
 451 Rudskogen Motorsenter
-452 Lucas Oil Raceway - Oval
+452 Lucas Oil Speedway
 453 Indianapolis Motor Speedway - Open Wheel Oval
+454 Motorsport Arena Oschersleben - Alternate
+455 Motorsport Arena Oschersleben - B Course
+456 Motorsport Arena Oschersleben - C Course
 462 Lincoln Speedway
 463 Circuit de Nevers Magny-Cours - Grand Prix
 465 Virginia International Raceway - Full Course
 466 Virginia International Raceway - Grand Course
-467 Virginia International Raceway - North
-468 Virginia International Raceway - South
-470 Daytona International Speedway - Dirt Road Long
-471 Daytona International Speedway - Dirt Road Short
+467 Virginia International Raceway - North Course
+468 Virginia International Raceway - South Course
+469 Virginia International Raceway - Patriot Course
+470 Daytona Rallycross and Dirt Road - Dirt Road Long
+471 Daytona Rallycross and Dirt Road - Dirt Road Short
 472 [Legacy] Phoenix Raceway - 2008 - Dirt Road
-473 Circuito de Jerez - √Ångel Nieto - Grand Prix
-474 Circuito de Jerez - √Ångel Nieto - Moto
-475 Motorland Arag√≥n - Grand Prix
-480 Motorland Arag√≥n - Outer
+473 Circuito de Jerez - ¡ngel Nieto - Grand Prix
+474 Circuito de Jerez - ¡ngel Nieto - Moto
+475 MotorLand AragÛn - Grand Prix
+476 MotorLand AragÛn - National
+477 MotorLand AragÛn - West
+478 MotorLand AragÛn - Motorcycle Grand Prix
+479 MotorLand AragÛn - Motorcycle National
+480 MotorLand AragÛn - Outer
 481 Willow Springs International Raceway - Big Willow
-483 Chicago Street Course - Prototype
+482 MotorLand AragÛn - Touring Car
+483 Chicago Street Course - 2023 Cup
+485 Circuit Zandvoort - Grand Prix
+486 Circuit Zandvoort - Grand Prix w/chicane
+487 Circuit Zandvoort - Nationaal
+488 Circuit Zandvoort - Oostelijk
+489 Circuit de LÈdenon
+493 Kern County Raceway Park - Asphalt Track
+494 Kern County Raceway Park - Dirt Track
+496 Kern County Raceway Park - Legends
+497 Kern County Raceway Park - Dirt Mini Oval
