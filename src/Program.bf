@@ -2064,8 +2064,8 @@ namespace iStats
 
 				if (series.mID != null)
 				{
-					if (FileExists(scope $"html/images/{series.mID}.jpg"))
-						outStr.AppendF($"<img src=images/{series.mID}.jpg /><br>");
+					if (FileExists(scope $"html/images/{series.mID}.png"))
+						outStr.AppendF($"<img src=images/{series.mID}.png /><br>");
 				}
 
 				/*for (var racingDay in lastWeek.mRacingDays)
@@ -2840,8 +2840,8 @@ namespace iStats
 
 						if (series.mID != null)
 						{
-							if (FileExists(scope $"html/images/icon/{series.mID}.jpg"))
-								kindOutStr.AppendF($"<img src=images/icon/{series.mID}.jpg />");
+							if (FileExists(scope $"html/images/icon/{series.mID}.png"))
+								kindOutStr.AppendF($"<img src=images/icon/{series.mID}.png />");
 						}
 
 						kindOutStr.AppendF(
